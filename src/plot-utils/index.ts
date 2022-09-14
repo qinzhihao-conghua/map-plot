@@ -6,7 +6,8 @@ import * as Geometry from './Geometry'
 class OlPlot {
   constructor(map, options) {
     this.plotDraw = new PlotDraw(map, options)
-    this.plotEdit = new PlotEdit(map, options)
+    // options 被删除了
+    this.plotEdit = new PlotEdit(map)
     this.plotUtils = new PlotUtils(map, options)
   }
   plotDraw: PlotDraw;

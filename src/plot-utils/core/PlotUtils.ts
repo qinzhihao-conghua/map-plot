@@ -21,7 +21,7 @@ import * as Geometry from '../Geometry'
 import { createVectorLayer, getLayerByLayerName } from '../Utils/layerUtils'
 import { BASE_LAYERNAME } from '../Constants'
 class PlotUtils {
-  constructor (map, options) {
+  constructor(map, options) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -31,13 +31,17 @@ class PlotUtils {
     this.options = options
     this.layerName = ((this.options && this.options['layerName']) ? this.options['layerName'] : BASE_LAYERNAME)
   }
-
+  type: string;
+  points: Array<any> = [];
+  map: Map;
+  options;
+  layerName: string;
   /**
    * 获取样式信息
    * @param feature
    * @returns {boolean}
    */
-  getBaseStyle (feature) {
+  getBaseStyle(feature) {
     let style = feature.getStyle()
     if (!style) {
       let layer = getLayerByLayerName(this.map, this.layerName)
@@ -55,12 +59,14 @@ class PlotUtils {
    * @param feature
    * @param image
    */
-  setIcon (feature, image) {
+  setIcon(feature, image) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
         let tempStyle = style.clone()
-        let _image = this._getImage(image)
+        // TODO: 原型链问题待处理
+        // let _image = this._getImage(image)
+        let _image = null;
         if (_image) {
           tempStyle.setImage(_image)
           feature.setStyle(tempStyle)
@@ -77,7 +83,7 @@ class PlotUtils {
    * @param backgroundColor
    * @returns {boolean}
    */
-  setBackgroundColor (feature, backgroundColor) {
+  setBackgroundColor(feature, backgroundColor) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -102,7 +108,7 @@ class PlotUtils {
    * @param feature
    * @param opacity
    */
-  setOpacity (feature, opacity) {
+  setOpacity(feature, opacity) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -129,7 +135,7 @@ class PlotUtils {
    * @param feature
    * @param borderColor
    */
-  setBorderColor (feature, borderColor) {
+  setBorderColor(feature, borderColor) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -148,7 +154,7 @@ class PlotUtils {
    * @param feature
    * @param borderWidth
    */
-  setBorderWidth (feature, borderWidth) {
+  setBorderWidth(feature, borderWidth) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -168,7 +174,7 @@ class PlotUtils {
    * @param opacity
    * @returns {string}
    */
-  handleBackgroundColor (color, opacity) {
+  handleBackgroundColor(color, opacity) {
     try {
       if (!opacity) opacity = 1
       let tempColor = asArray(color)
@@ -184,7 +190,7 @@ class PlotUtils {
    * @param color
    * @returns {string}
    */
-  getColor (color) {
+  getColor(color) {
     try {
       let colorTarget = asArray(color)
       return (asString(colorTarget))
@@ -198,7 +204,7 @@ class PlotUtils {
    * @param obj
    * @returns {*}
    */
-  fixObject (obj) {
+  fixObject(obj) {
     if (obj && typeof obj === 'object') {
       for (let key in obj) {
         if (key && typeof obj[key] === 'undefined') {
@@ -214,7 +220,7 @@ class PlotUtils {
    * @param style
    * @returns {*}
    */
-  getStroke_ (style) {
+  getStroke_(style) {
     let stroke = null
     if (style) {
       let olStyle_ = style.getStroke()
@@ -238,7 +244,7 @@ class PlotUtils {
    * @returns {*}
    * @private
    */
-  getFill_ (style) {
+  getFill_(style) {
     let fill = null
     if (style) {
       let olStyle_ = style.getFill()
@@ -257,7 +263,7 @@ class PlotUtils {
    * @returns {*}
    * @private
    */
-  getText_ (style) {
+  getText_(style) {
     let text = null
     if (style) {
       let olStyle_ = style.getText()
@@ -285,7 +291,7 @@ class PlotUtils {
    * @returns {*}
    * @private
    */
-  getImage_ (style) {
+  getImage_(style) {
     let image = null
     if (style) {
       let olStyle_ = style.getImage()
@@ -302,7 +308,8 @@ class PlotUtils {
           image['image']['imageRotation'] = olStyle_.getRotation()
           image['image']['rotateWithView'] = olStyle_.getRotateWithView()
           image['image']['imageOpacity'] = olStyle_.getOpacity()
-          image['image']['snapToPixel'] = olStyle_.getSnapToPixel()
+          // TODO: 没有这个方法
+          // image['image']['snapToPixel'] = olStyle_.getSnapToPixel()
           image['image']['offset'] = olStyle_.getOrigin()
         } else if (olStyle_ instanceof RegularShape) {
           image['type'] = ''
@@ -314,7 +321,7 @@ class PlotUtils {
           image['image']['angle'] = olStyle_.getAngle()
           image['image']['stroke'] = this.getStroke_(olStyle_)
           image['image']['rotateWithView'] = olStyle_.getRotateWithView()
-          image['image']['snapToPixel'] = olStyle_.getSnapToPixel()
+          // image['image']['snapToPixel'] = olStyle_.getSnapToPixel()
         }
       }
     }
@@ -326,14 +333,14 @@ class PlotUtils {
    * @param feature
    * @returns {{fill: {fillColor: string, opacity: number}, stroke: *, image: *, text: *}}
    */
-  getStyleCode (feature) {
+  getStyleCode(feature) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
         if (style && style instanceof Style) {
           // 填充颜色
           let fill = this.getFill_(style)
-          let [opacity, rgbaArray, backgroundColor] = [1, null]
+          let [opacity, rgbaArray, backgroundColor] = [1, null, undefined]
           if (fill && fill['fillColor']) {
             rgbaArray = asArray(fill['fillColor'])
             opacity = parseFloat(rgbaArray[3])
@@ -366,7 +373,7 @@ class PlotUtils {
   /**
    * 移除图层上所有的数据
    */
-  removeAllFeatures () {
+  removeAllFeatures() {
     const layer = getLayerByLayerName(this.map, this.layerName)
     const overlays_ = this.map.getOverlays().getArray()
     if (layer) {
@@ -388,7 +395,7 @@ class PlotUtils {
    * 获取所有的要素包含样式信息的GeoJSON
    * @returns {Array}
    */
-  getFeatures () {
+  getFeatures() {
     let rFeatures = []
     let layer = getLayerByLayerName(this.map, this.layerName)
     if (layer) {
@@ -421,8 +428,10 @@ class PlotUtils {
       }
     }
     const overlays_ = this.map.getOverlays().getArray()
-    overlays_.forEach(overlay => {
+    // TODO: 有好几个方法是不是被废弃了，待验证
+    overlays_.forEach((overlay: any) => {
       if (overlay.get('isPlotText')) {
+        debugger
         const style_ = overlay.getStyle()
         style_['width'] = overlay.getWidth() + 'px'
         style_['height'] = overlay.getHeight() + 'px'
@@ -449,7 +458,7 @@ class PlotUtils {
    * 恢复相关标绘
    * @param features
    */
-  addFeatures (features) {
+  addFeatures(features) {
     if (features && Array.isArray(features) && features.length > 0) {
       let layer = getLayerByLayerName(this.map, this.layerName)
       if (!layer) {
@@ -471,8 +480,8 @@ class PlotUtils {
                 feat.set('isPlot', true)
                 _extents.push(feat.getGeometry().getExtent())
                 if (feature['properties']['style']) {
-                  /* eslint new-cap: 0 */
-                  let style_ = new olStyleFactory(feature['properties']['style'])
+
+                  let style_ = olStyleFactory(feature['properties']['style'])
                   if (style_) {
                     feat.setStyle(style_)
                   }
@@ -517,9 +526,9 @@ class PlotUtils {
    * get extent
    * @private
    */
-  _getExtent (extents, params = {}) {
-    const bbox = [ Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY,
-      Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY]
+  _getExtent(extents, params = {}) {
+    const bbox = [Number.POSITIVE_INFINITY, Number.POSITIVE_INFINITY,
+    Number.NEGATIVE_INFINITY, Number.NEGATIVE_INFINITY]
     let _extent = extents.reduce(function (prev, coord) {
       return [
         Math.min(coord[0], prev[0]),

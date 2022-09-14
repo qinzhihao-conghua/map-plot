@@ -24,63 +24,21 @@ import * as PlotTypes from '../Utils/PlotTypes'
 import GeoJSON from "ol/format/GeoJSON";
 
 class PlotDraw extends Observable {
-  constructor (map, params) {
+  constructor(map, params) {
     super()
     if (map && map instanceof Map) {
       this.map = map
     } else {
       throw new Error('传入的不是地图对象！')
     }
-    this.options = params || {}
-    /**
-     * 交互点
-     * @type {null}
-     */
-    this.points = null
-    /**
-     * 当前标绘工具
-     * @type {null}
-     */
-    this.plot = null
-    /**
-     * 当前要素
-     * @type {null}
-     */
-    this.feature = null
-    /**
-     * 标绘类型
-     * @type {null}
-     */
-    this.plotType = null
-    /**
-     * 当前标绘参数
-     * @type {null}
-     */
-    this.plotParams = null
-    /**
-     * 当前地图视图
-     * @type {Element}
-     */
-    this.mapViewport = this.map.getViewport()
-    /**
-     * 地图双击交互
-     * @type {null}
-     */
-    this.dblClickZoomInteraction = null
 
-    /**
-     * draw交互工具
-     * @type {null}
-     * @private
-     */
-    this.drawInteraction_ = null
 
     /**
      * 创建图层名称
      * @type {string}
      */
     this.layerName = ((this.options && this.options['layerName']) ? this.options['layerName'] : BASE_LAYERNAME)
-
+    this.mapViewport = this.map.getViewport()
     bindAll([
       'textAreaDrawEnd',
       'mapFirstClickHandler',
@@ -98,6 +56,52 @@ class PlotDraw extends Observable {
     })
     this.drawLayer.setZIndex(this.options['zIndex'] || 99)
   }
+  map: Map;
+  options = {};
+  drawLayer;
+  layerName;
+  /**
+   * 交互点
+   * @type {null}
+   */
+  points = null
+  /**
+   * 当前标绘工具
+   * @type {null}
+   */
+  plot = null
+  /**
+   * 当前要素
+   * @type {null}
+   */
+  feature = null
+  /**
+   * 标绘类型
+   * @type {null}
+   */
+  plotType = null
+  /**
+   * 当前标绘参数
+   * @type {null}
+   */
+  plotParams = null
+  /**
+   * 当前地图视图
+   * @type {Element}
+   */
+  mapViewport = null;
+  /**
+   * 地图双击交互
+   * @type {null}
+   */
+  dblClickZoomInteraction = null
+
+  /**
+   * draw交互工具
+   * @type {null}
+   * @private
+   */
+  drawInteraction_ = null
 
   /**
    * 创建Plot，标绘类型
@@ -106,7 +110,7 @@ class PlotDraw extends Observable {
    * @param _params
    * @returns {*}
    */
-  createPlot (type, points, _params) {
+  createPlot(type, points, _params) {
     let params = _params || {}
     switch (type) {
       case PlotTypes.TEXTAREA:
@@ -172,7 +176,7 @@ class PlotDraw extends Observable {
    * @param type
    * @param params
    */
-  active (type, params = {}) {
+  active(type, params = {}) {
     this.disActive()
     this.deactiveMapTools()
     this.plotType = type
@@ -189,7 +193,7 @@ class PlotDraw extends Observable {
   /**
    * 激活交互工具
    */
-  activeInteraction () {
+  activeInteraction() {
     // Draw as $DrawInteraction
     this.drawInteraction_ = new $DrawInteraction({
       style: new $Style({
@@ -202,13 +206,13 @@ class PlotDraw extends Observable {
         }),
         image: new $Icon({
           anchor: [1, 1],
-          anchorXUnits: 'fraction',
-          anchorYUnits: 'fraction',
+          anchorXUnits: ('fraction' as any),
+          anchorYUnits: ('fraction' as any),
           opacity: 0.75,
           src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABgklEQVQ4T41T0W3CQAy1lfwRqR0h/CE5UhkBJmiZADpB0wlKJwA2aDegE5QR+Igl/noj9OPuLydXPuXQEYUKS5FyPvvd87ONRDRFxEdr7c4Y8ws3WFmW90VRvIjIF1ZVtQaANxH59N6v8zwvRaQEgCMATDu88I+Ipm1bk2XZHhEfAOAdFW00Gh2YOQafOeidHoaYEdGHc65GDZhMJuXpdDJ99hqkPmZe9e9iTgCoqmrWNM0hDerq/FGftXbcZxFzAgARrZg5vBaNiGpE3OhZRF6Zedu7DzkRYMrMKlQKYBBRQVVgw8zj3n3IGWSg9ESkds6tiqJQbe4AYJ6WGVkPAqh4+romdP9LbXMqZh/gXIKqm+d5EK9vbduOY7d0AAdL6AYLmqbRAQtGRMc4ONF/wSC2RF/PsuwbABapqLEjKqb3fq4sLtoYh6Lbiydr7TbtuwYDgH5qB9XmPEjdKG+Y+Xmo7ms+Lcs5N0uX6ei9X9y4TGtEXIZlukb7PzbdmNcisv8DtQILak2vZsYAAAAASUVORK5CYII='
         })
       }),
-      type: 'Circle',
+      type: ('Circle' as any),
       geometryFunction: createBox()
     })
     this.map.addInteraction(this.drawInteraction_)
@@ -219,7 +223,7 @@ class PlotDraw extends Observable {
    * 绘制结束
    * @param event
    */
-  textAreaDrawEnd (event) {
+  textAreaDrawEnd(event) {
     if (event && event.feature) {
       this.map.removeInteraction(this.drawInteraction_)
       const extent = event.feature.getGeometry().getExtent()
@@ -251,7 +255,7 @@ class PlotDraw extends Observable {
   /**
    * 取消激活状态
    */
-  disActive () {
+  disActive() {
     this.removeEventHandlers()
     if (this.drawInteraction_) {
       this.map.removeInteraction(this.drawInteraction_)
@@ -269,7 +273,7 @@ class PlotDraw extends Observable {
    * PLOT是否处于激活状态
    * @returns {boolean}
    */
-  isDrawing () {
+  isDrawing() {
     return !!this.plotType
   }
 
@@ -278,7 +282,7 @@ class PlotDraw extends Observable {
    * 激活工具后第一次点击事件
    * @param event
    */
-  mapFirstClickHandler (event) {
+  mapFirstClickHandler(event) {
     // 解绑
     this.map.un('click', this.mapFirstClickHandler)
     this.points.push(event.coordinate)
@@ -309,7 +313,7 @@ class PlotDraw extends Observable {
    * @param event
    * @returns {boolean}
    */
-  mapNextClickHandler (event) {
+  mapNextClickHandler(event) {
     if (!this.plot.freehand) {
       if (MathDistance(event.coordinate, this.points[this.points.length - 1]) < 0.0001) {
         return false
@@ -330,7 +334,7 @@ class PlotDraw extends Observable {
    * 地图双击事件处理
    * @param event
    */
-  mapDoubleClickHandler (event) {
+  mapDoubleClickHandler(event) {
     event.preventDefault()
     this.plot.finishDrawing()
     this.drawEnd(event)
@@ -342,7 +346,7 @@ class PlotDraw extends Observable {
    * @param event
    * @returns {boolean}
    */
-  mapMouseMoveHandler (event) {
+  mapMouseMoveHandler(event) {
     let coordinate = event.coordinate
     if (MathDistance(coordinate, this.points[this.points.length - 1]) < 0.0001) {
       return false
@@ -359,7 +363,7 @@ class PlotDraw extends Observable {
   /**
    * 移除事件监听
    */
-  removeEventHandlers () {
+  removeEventHandlers() {
     this.map.un('click', this.mapFirstClickHandler)
     this.map.un('click', this.mapNextClickHandler)
     this.map.un('pointermove', this.mapMouseMoveHandler)
@@ -369,7 +373,7 @@ class PlotDraw extends Observable {
   /**
    * 绘制结束
    */
-  drawEnd (event) {
+  drawEnd(event) {
     // this.dispatchSync('drawEnd', {
     //   type: 'drawEnd',
     //   originalEvent: event,
@@ -380,14 +384,14 @@ class PlotDraw extends Observable {
     }
     // console.log('PlotDraw绘制结束事件',event)
     // console.log('PlotDraw绘制结束图层',this.feature)
-    console.log('PlotDraw绘制结束geojson数据',JSON.parse(new GeoJSON().writeFeature(this.feature)) )
+    console.log('PlotDraw绘制结束geojson数据', JSON.parse(new GeoJSON().writeFeature(this.feature)))
     this.disActive()
   }
 
   /**
    * 添加要素
    */
-  addFeature () {
+  addFeature() {
     this.feature = new Feature(this.plot)
     if (this.feature && this.drawLayer) {
       this.drawLayer.getSource().addFeature(this.feature)
@@ -397,7 +401,7 @@ class PlotDraw extends Observable {
   /**
    * 取消激活地图交互工具
    */
-  deactiveMapTools () {
+  deactiveMapTools() {
     let interactions = this.map.getInteractions().getArray()
     interactions.every(item => {
       if (item instanceof DoubleClickZoom) {
@@ -414,7 +418,7 @@ class PlotDraw extends Observable {
    * 激活已取消的地图工具
    * 还原之前状态
    */
-  activateMapTools () {
+  activateMapTools() {
     if (this.dblClickZoomInteraction && this.dblClickZoomInteraction instanceof DoubleClickZoom) {
       this.map.addInteraction(this.dblClickZoomInteraction)
       this.dblClickZoomInteraction = null
