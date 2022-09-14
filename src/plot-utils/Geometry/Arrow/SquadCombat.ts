@@ -9,7 +9,7 @@ import AttackArrow from './AttackArrow'
 import * as PlotUtils from '../../Utils/utils'
 import * as Constants from '../../Constants'
 class SquadCombat extends AttackArrow {
-  constructor (coordinates, points, params) {
+  constructor(coordinates, points, params) {
     super(coordinates, points, params)
     this.type = SQUAD_COMBAT
     this.headHeightFactor = 0.18
@@ -24,11 +24,11 @@ class SquadCombat extends AttackArrow {
       this.setCoordinates(coordinates)
     }
   }
-
+  tailWidthFactor: number;
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     try {
       let count = this.getPointCount()
       if (count < 2) {
@@ -54,7 +54,7 @@ class SquadCombat extends AttackArrow {
     }
   }
 
-  getTailPoints (points) {
+  getTailPoints(points) {
     let allLen = PlotUtils.getBaseLength(points)
     let tailWidth = allLen * this.tailWidthFactor
     let tailLeft = PlotUtils.getThirdPoint(points[1], points[0], Constants.HALF_PI, tailWidth, false)

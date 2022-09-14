@@ -8,7 +8,7 @@ import { TAILED_ATTACK_ARROW } from '../../Utils/PlotTypes'
 import AttackArrow from './AttackArrow'
 import * as PlotUtils from '../../Utils/utils'
 class TailedAttackArrow extends AttackArrow {
-  constructor (coordinates, points, params) {
+  constructor(coordinates, points, params) {
     super(coordinates, points, params)
     this.type = TAILED_ATTACK_ARROW
     this.headHeightFactor = 0.18
@@ -26,11 +26,13 @@ class TailedAttackArrow extends AttackArrow {
       this.setCoordinates(coordinates)
     }
   }
-
+  tailWidthFactor: number;
+  swallowTailFactor: number;
+  swallowTailPnt: Array<number>;
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     try {
       let points = this.getPointCount()
       if (points < 2) {

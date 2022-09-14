@@ -9,7 +9,7 @@ import { FINE_ARROW } from '../../Utils/PlotTypes'
 import * as PlotUtils from '../../Utils/utils'
 import * as Constants from '../../Constants'
 class FineArrow extends Polygon {
-  constructor (coordinates, points, params) {
+  constructor(coordinates, points, params) {
     super([])
     this.type = FINE_ARROW
     this.tailWidthFactor = 0.1
@@ -25,19 +25,27 @@ class FineArrow extends Polygon {
       this.setCoordinates(coordinates)
     }
   }
-
+  type: string;
+  points: Array<any> = [];
+  map: Map;
+  tailWidthFactor: number;
+  neckWidthFactor: number;
+  headWidthFactor: number;
+  headAngle: number;
+  neckAngle: number;
+  fixPointCount: number;
   /**
    * 获取标绘类型
    * @returns {*}
    */
-  getPlotType () {
+  getPlotType() {
     return this.type
   }
 
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     try {
       let cont = this.getPointCount()
       if (cont < 2) {
@@ -67,7 +75,7 @@ class FineArrow extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap (map) {
+  setMap(map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -79,7 +87,7 @@ class FineArrow extends Polygon {
    * 获取当前地图对象
    * @returns {Map|*}
    */
-  getMap () {
+  getMap() {
     return this.map
   }
 
@@ -87,7 +95,7 @@ class FineArrow extends Polygon {
    * 判断是否是Plot
    * @returns {boolean}
    */
-  isPlot () {
+  isPlot() {
     return true
   }
 
@@ -95,7 +103,7 @@ class FineArrow extends Polygon {
    * 设置坐标点
    * @param value
    */
-  setPoints (value) {
+  setPoints(value) {
     this.points = !value ? [] : value
     if (this.points.length >= 1) {
       this.generate()
@@ -106,7 +114,7 @@ class FineArrow extends Polygon {
    * 获取坐标点
    * @returns {Array.<T>}
    */
-  getPoints () {
+  getPoints() {
     return this.points.slice(0)
   }
 
@@ -114,7 +122,7 @@ class FineArrow extends Polygon {
    * 获取点数量
    * @returns {Number}
    */
-  getPointCount () {
+  getPointCount() {
     return this.points.length
   }
 
@@ -123,7 +131,7 @@ class FineArrow extends Polygon {
    * @param point
    * @param index
    */
-  updatePoint (point, index) {
+  updatePoint(point, index) {
     if (index >= 0 && index < this.points.length) {
       this.points[index] = point
       this.generate()
@@ -134,14 +142,14 @@ class FineArrow extends Polygon {
    * 更新最后一个坐标
    * @param point
    */
-  updateLastPoint (point) {
+  updateLastPoint(point) {
     this.updatePoint(point, this.points.length - 1)
   }
 
   /**
    * 结束绘制
    */
-  finishDrawing () {
+  finishDrawing() {
   }
 }
 
