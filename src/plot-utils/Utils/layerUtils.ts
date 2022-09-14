@@ -78,9 +78,10 @@ const createVectorLayer = function (map, layerName, params) {
       if (!vectorLayer) {
         if (params && params.create) {
           vectorLayer = new $VectorLayer({
-            layerName: layerName,
-            params: params,
-            layerType: 'vector',
+            // TODO:待缺人这三个字段是否已取消
+            // layerName: layerName,
+            // params: params,
+            // layerType: 'vector',
             source: new $VectorSource({
               wrapX: false
             }),

@@ -1,12 +1,16 @@
+/**
+ * Created by FDD on 2017/5/24.
+ * @desc 自由线
+ * @Inherits ol.geom.LineString
+ */
 import { Map } from 'ol'
 import { LineString } from 'ol/geom'
-
-import { POLYLINE } from '../../Utils/PlotTypes'
-class Polyline extends LineString {
-  constructor (coordinates, points, params) {
+import { FREEHANDLINE } from '../../Utils/PlotTypes'
+class FreeHandLine extends LineString {
+  constructor(coordinates, points, params) {
     super([])
-    this.type = POLYLINE
-    this.freehand = false
+    this.type = FREEHANDLINE
+    this.freehand = true
     this.set('params', params)
     if (points && points.length > 0) {
       this.setPoints(points)
@@ -14,19 +18,22 @@ class Polyline extends LineString {
       this.setCoordinates(coordinates)
     }
   }
-
+  type: string;
+  freehand: boolean;
+  points = [];
+  map: Map;
   /**
    * 获取标绘类型
    * @returns {*}
    */
-  getPlotType () {
+  getPlotType() {
     return this.type
   }
 
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     this.setCoordinates(this.points)
   }
 
@@ -34,7 +41,7 @@ class Polyline extends LineString {
    * 设置地图对象
    * @param map
    */
-  setMap (map) {
+  setMap(map: Map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -46,7 +53,7 @@ class Polyline extends LineString {
    * 获取当前地图对象
    * @returns {ol.Map|*}
    */
-  getMap () {
+  getMap() {
     return this.map
   }
 
@@ -54,7 +61,7 @@ class Polyline extends LineString {
    * 判断是否是Plot
    * @returns {boolean}
    */
-  isPlot () {
+  isPlot() {
     return true
   }
 
@@ -62,7 +69,7 @@ class Polyline extends LineString {
    * 设置坐标点
    * @param value
    */
-  setPoints (value) {
+  setPoints(value) {
     this.points = !value ? [] : value
     if (this.points.length >= 1) {
       this.generate()
@@ -73,7 +80,7 @@ class Polyline extends LineString {
    * 获取坐标点
    * @returns {Array.<T>}
    */
-  getPoints () {
+  getPoints() {
     return this.points.slice(0)
   }
 
@@ -81,7 +88,7 @@ class Polyline extends LineString {
    * 获取点数量
    * @returns {Number}
    */
-  getPointCount () {
+  getPointCount() {
     return this.points.length
   }
 
@@ -90,7 +97,7 @@ class Polyline extends LineString {
    * @param point
    * @param index
    */
-  updatePoint (point, index) {
+  updatePoint(point, index) {
     if (index >= 0 && index < this.points.length) {
       this.points[index] = point
       this.generate()
@@ -101,15 +108,15 @@ class Polyline extends LineString {
    * 更新最后一个坐标
    * @param point
    */
-  updateLastPoint (point) {
+  updateLastPoint(point) {
     this.updatePoint(point, this.points.length - 1)
   }
 
   /**
    * 结束绘制
    */
-  finishDrawing () {
+  finishDrawing() {
   }
 }
 
-export default Polyline
+export default FreeHandLine

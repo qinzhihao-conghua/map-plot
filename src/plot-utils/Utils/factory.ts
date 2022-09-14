@@ -47,6 +47,7 @@ StyleFactory.prototype._getRegularShape = function (options) {
       radius1: ((typeof options['radius1'] === 'number') ? options['radius1'] : undefined),
       radius2: ((typeof options['radius2'] === 'number') ? options['radius2'] : undefined),
       angle: ((typeof options['angle'] === 'number') ? options['angle'] : 0),
+      // @ts-ignore
       snapToPixel: ((typeof options['snapToPixel'] === 'boolean') ? options['snapToPixel'] : true),
       stroke: (this._getStroke(options['stroke']) || undefined),
       rotation: ((typeof options['rotation'] === 'number') ? options['rotation'] : 0),
@@ -86,7 +87,7 @@ StyleFactory.prototype._getImage = function (options) {
  * @returns {ol.style.Icon}
  * @private
  */
-StyleFactory.prototype._getIcon = function (options) {
+StyleFactory.prototype._getIcon = function (options: any) {
   try {
     options = options || {}
     let icon = new Icon({
@@ -100,12 +101,14 @@ StyleFactory.prototype._getIcon = function (options) {
       offset: (options['offset'] && Array.isArray(options['offset']) && options['offset'].length === 2 ? options['offset'] : [0, 0]),
       offsetOrigin: (options['offsetOrigin'] ? options['offsetOrigin'] : 'top-left'),
       scale: ((typeof options['scale'] === 'number') ? options['scale'] : 1),
-      snapToPixel: (typeof options['snapToPixel'] === 'boolean' ? options['snapToPixel'] : true),
+      // snapToPixel: (typeof options['snapToPixel'] === 'boolean' ? options['snapToPixel'] : true),
       rotateWithView: (typeof options['rotateWithView'] === 'boolean' ? options['rotateWithView'] : false),
       opacity: (typeof options['imageOpacity'] === 'number' ? options['imageOpacity'] : 1),
       rotation: (typeof options['imageRotation'] === 'number' ? options['imageRotation'] : 0),
-      size: (options['size'] && Array.isArray(options['size']) && options['size'].length === 2 ? options['size'] : undefined),
-      imgSize: (options['imgSize'] && Array.isArray(options['imgSize']) && options['imgSize'].length === 2 ? options['imgSize'] : undefined),
+
+      size: (options['size'] && Array.isArray(options['size']) && options['size'].length === 2 ? options['size'] : undefined) as any,
+
+      imgSize: (options['imgSize'] && Array.isArray(options['imgSize']) && options['imgSize'].length === 2 ? options['imgSize'] : undefined) as any,
       src: (options['imageSrc'] ? options['imageSrc'] : undefined)
     })
     return icon
@@ -124,9 +127,12 @@ StyleFactory.prototype._getStroke = function (options) {
     options = options || {}
     let stroke = new Stroke({
       color: (options['strokeColor'] ? options['strokeColor'] : undefined),
+      // @ts-ignore
       lineCap: ((options['strokeLineCap'] && typeof options['strokeLineCap'] === 'string') ? options['strokeLineCap'] : 'round'),
+      // @ts-ignore
       lineJoin: ((options['strokeLineJoin'] && typeof options['strokeLineJoin'] === 'string') ? options['strokeLineJoin'] : 'round'),
       lineDash: (options['strokeLineDash'] ? options['strokeLineDash'] : undefined),
+      // @ts-ignore
       lineDashOffset: (typeof options['strokeLineDashOffset'] === 'number' ? options['strokeLineDashOffset'] : '0'),
       miterLimit: (typeof options['strokeMiterLimit'] === 'number' ? options['strokeMiterLimit'] : 10),
       width: (typeof options['strokeWidth'] === 'number' ? options['strokeWidth'] : undefined)
