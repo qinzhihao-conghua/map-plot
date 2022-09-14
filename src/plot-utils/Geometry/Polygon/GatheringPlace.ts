@@ -9,7 +9,7 @@ import { GATHERING_PLACE } from '../../Utils/PlotTypes'
 import * as PlotUtils from '../../Utils/utils'
 import * as Constants from '../../Constants'
 class GatheringPlace extends Polygon {
-  constructor (coordinates, points, params) {
+  constructor(coordinates, points, params) {
     super([])
     this.type = GATHERING_PLACE
     this.t = 0.4
@@ -21,19 +21,23 @@ class GatheringPlace extends Polygon {
       this.setCoordinates(coordinates)
     }
   }
-
+  type: string;
+  points: Array<any> = [];
+  map: Map;
+  fixPointCount: number;
+  t: number;
   /**
    * 获取标绘类型
    * @returns {*}
    */
-  getPlotType () {
+  getPlotType() {
     return this.type
   }
 
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     let pnts = this.getPoints()
     let points = this.getPointCount()
     if (pnts.length < 2) {
@@ -75,7 +79,7 @@ class GatheringPlace extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap (map) {
+  setMap(map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -87,7 +91,7 @@ class GatheringPlace extends Polygon {
    * 获取当前地图对象
    * @returns {Map|*}
    */
-  getMap () {
+  getMap() {
     return this.map
   }
 
@@ -95,7 +99,7 @@ class GatheringPlace extends Polygon {
    * 判断是否是Plot
    * @returns {boolean}
    */
-  isPlot () {
+  isPlot() {
     return true
   }
 
@@ -103,7 +107,7 @@ class GatheringPlace extends Polygon {
    * 设置坐标点
    * @param value
    */
-  setPoints (value) {
+  setPoints(value) {
     this.points = !value ? [] : value
     if (this.points.length >= 1) {
       this.generate()
@@ -114,7 +118,7 @@ class GatheringPlace extends Polygon {
    * 获取坐标点
    * @returns {Array.<T>}
    */
-  getPoints () {
+  getPoints() {
     return this.points.slice(0)
   }
 
@@ -122,7 +126,7 @@ class GatheringPlace extends Polygon {
    * 获取点数量
    * @returns {Number}
    */
-  getPointCount () {
+  getPointCount() {
     return this.points.length
   }
 
@@ -131,7 +135,7 @@ class GatheringPlace extends Polygon {
    * @param point
    * @param index
    */
-  updatePoint (point, index) {
+  updatePoint(point, index) {
     if (index >= 0 && index < this.points.length) {
       this.points[index] = point
       this.generate()
@@ -142,14 +146,14 @@ class GatheringPlace extends Polygon {
    * 更新最后一个坐标
    * @param point
    */
-  updateLastPoint (point) {
+  updateLastPoint(point) {
     this.updatePoint(point, this.points.length - 1)
   }
 
   /**
    * 结束绘制
    */
-  finishDrawing () {
+  finishDrawing() {
   }
 }
 

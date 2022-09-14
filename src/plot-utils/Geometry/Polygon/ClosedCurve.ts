@@ -9,7 +9,7 @@ import { CLOSED_CURVE } from '../../Utils/PlotTypes'
 import * as PlotUtils from '../../Utils/utils'
 import * as Constants from '../../Constants'
 class ClosedCurve extends Polygon {
-  constructor (coordinates, points, params) {
+  constructor(coordinates, points, params) {
     super([])
     this.type = CLOSED_CURVE
     this.t = 0.3
@@ -20,19 +20,22 @@ class ClosedCurve extends Polygon {
       this.setCoordinates(coordinates)
     }
   }
-
+  type: string;
+  points: Array<any> = [];
+  map: Map;
+  t: number;
   /**
    * 获取标绘类型
    * @returns {*}
    */
-  getPlotType () {
+  getPlotType() {
     return this.type
   }
 
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     let points = this.getPointCount()
     if (points < 2) {
       return false
@@ -66,7 +69,7 @@ class ClosedCurve extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap (map) {
+  setMap(map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -78,7 +81,7 @@ class ClosedCurve extends Polygon {
    * 获取当前地图对象
    * @returns {Map|*}
    */
-  getMap () {
+  getMap() {
     return this.map
   }
 
@@ -86,7 +89,7 @@ class ClosedCurve extends Polygon {
    * 判断是否是Plot
    * @returns {boolean}
    */
-  isPlot () {
+  isPlot() {
     return true
   }
 
@@ -94,7 +97,7 @@ class ClosedCurve extends Polygon {
    * 设置坐标点
    * @param value
    */
-  setPoints (value) {
+  setPoints(value) {
     this.points = !value ? [] : value
     if (this.points.length >= 1) {
       this.generate()
@@ -105,7 +108,7 @@ class ClosedCurve extends Polygon {
    * 获取坐标点
    * @returns {Array.<T>}
    */
-  getPoints () {
+  getPoints() {
     return this.points.slice(0)
   }
 
@@ -113,7 +116,7 @@ class ClosedCurve extends Polygon {
    * 获取点数量
    * @returns {Number}
    */
-  getPointCount () {
+  getPointCount() {
     return this.points.length
   }
 
@@ -122,7 +125,7 @@ class ClosedCurve extends Polygon {
    * @param point
    * @param index
    */
-  updatePoint (point, index) {
+  updatePoint(point, index) {
     if (index >= 0 && index < this.points.length) {
       this.points[index] = point
       this.generate()
@@ -133,14 +136,14 @@ class ClosedCurve extends Polygon {
    * 更新最后一个坐标
    * @param point
    */
-  updateLastPoint (point) {
+  updateLastPoint(point) {
     this.updatePoint(point, this.points.length - 1)
   }
 
   /**
    * 结束绘制
    */
-  finishDrawing () {
+  finishDrawing() {
   }
 }
 
