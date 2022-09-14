@@ -4,12 +4,14 @@
  */
 import { Map } from 'ol'
 import { Polygon } from 'ol/geom'
-import { CIRCLE } from '../../Utils/PlotTypes'
+
+import { ELLIPSE } from '../../Utils/PlotTypes'
+import * as Constants from '../../Constants'
 import * as PlotUtils from '../../Utils/utils'
-class Circle extends Polygon {
-  constructor (coordinates, points, params) {
+class Ellipse extends Polygon {
+  constructor(coordinates, points, params) {
     super([])
-    this.type = CIRCLE
+    this.type = ELLIPSE
     this.fixPointCount = 2
     this.set('params', params)
     if (points && points.length > 0) {
@@ -18,38 +20,44 @@ class Circle extends Polygon {
       this.setCoordinates(coordinates)
     }
   }
-
+  type: string;
+  points: Array<any> = [];
+  map: Map;
+  fixPointCount: number;
   /**
    * 获取标绘类型
    * @returns {*}
    */
-  getPlotType () {
+  getPlotType() {
     return this.type
   }
 
-  generate () {
-    let count = this.getPointCount()
-    if (count < 2) {
+  generate() {
+    if (this.getPointCount() < 2) {
       return false
     } else {
-      let center = this.points[0]
-      let radius = PlotUtils.MathDistance(center, this.points[1])
-      this.setCoordinates([this.generatePoints(center, radius)])
+      let [pnt1, pnt2] = [this.points[0], this.points[1]]
+      let center = PlotUtils.Mid(pnt1, pnt2)
+      let majorRadius = Math.abs((pnt1[0] - pnt2[0]) / 2)
+      let minorRadius = Math.abs((pnt1[1] - pnt2[1]) / 2)
+      let res = this.generatePoints(center, majorRadius, minorRadius)
+      this.setCoordinates([res])
     }
   }
 
   /**
    * 对圆边线进行插值
    * @param center
-   * @param radius
-   * @returns {null}
+   * @param majorRadius
+   * @param minorRadius
+   * @returns {*}
    */
-  generatePoints (center, radius) {
+  generatePoints(center, majorRadius, minorRadius) {
     let [x, y, angle, points] = [null, null, null, []]
-    for (let i = 0; i <= 100; i++) {
-      angle = Math.PI * 2 * i / 100
-      x = center[0] + radius * Math.cos(angle)
-      y = center[1] + radius * Math.sin(angle)
+    for (let i = 0; i <= Constants.FITTING_COUNT; i++) {
+      angle = Math.PI * 2 * i / Constants.FITTING_COUNT
+      x = center[0] + majorRadius * Math.cos(angle)
+      y = center[1] + minorRadius * Math.sin(angle)
       points.push([x, y])
     }
     return points
@@ -59,7 +67,7 @@ class Circle extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap (map) {
+  setMap(map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -71,7 +79,7 @@ class Circle extends Polygon {
    * 获取当前地图对象
    * @returns {{}|*}
    */
-  getMap () {
+  getMap() {
     return this.map
   }
 
@@ -79,7 +87,7 @@ class Circle extends Polygon {
    * 判断是否是Plot
    * @returns {boolean}
    */
-  isPlot () {
+  isPlot() {
     return true
   }
 
@@ -87,7 +95,7 @@ class Circle extends Polygon {
    * 设置坐标点
    * @param value
    */
-  setPoints (value) {
+  setPoints(value) {
     this.points = !value ? [] : value
     if (this.points.length >= 1) {
       this.generate()
@@ -98,7 +106,7 @@ class Circle extends Polygon {
    * 获取坐标点
    * @returns {Array.<T>}
    */
-  getPoints () {
+  getPoints() {
     return this.points.slice(0)
   }
 
@@ -106,7 +114,7 @@ class Circle extends Polygon {
    * 获取点数量
    * @returns {Number}
    */
-  getPointCount () {
+  getPointCount() {
     return this.points.length
   }
 
@@ -115,7 +123,7 @@ class Circle extends Polygon {
    * @param point
    * @param index
    */
-  updatePoint (point, index) {
+  updatePoint(point, index) {
     if (index >= 0 && index < this.points.length) {
       this.points[index] = point
       this.generate()
@@ -126,15 +134,15 @@ class Circle extends Polygon {
    * 更新最后一个坐标
    * @param point
    */
-  updateLastPoint (point) {
+  updateLastPoint(point) {
     this.updatePoint(point, this.points.length - 1)
   }
 
   /**
    * 结束绘制
    */
-  finishDrawing () {
+  finishDrawing() {
   }
 }
 
-export default Circle
+export default Ellipse
