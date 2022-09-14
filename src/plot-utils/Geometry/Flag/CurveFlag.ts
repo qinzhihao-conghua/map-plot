@@ -7,7 +7,7 @@ import { Polygon } from 'ol/geom'
 import { CURVEFLAG } from '../../Utils/PlotTypes'
 import { getBezierPoints } from '../../Utils/utils'
 class CurveFlag extends Polygon {
-  constructor (coordinates, points, params) {
+  constructor(coordinates, points, params) {
     super([])
     this.type = CURVEFLAG
     this.fixPointCount = 2
@@ -18,19 +18,22 @@ class CurveFlag extends Polygon {
       this.setCoordinates(coordinates)
     }
   }
-
+  type: string;
+  points: Array<any> = [];
+  map: Map;
+  fixPointCount: number;
   /**
    * 获取标绘类型
    * @returns {*}
    */
-  getPlotType () {
+  getPlotType() {
     return this.type
   }
 
   /**
    * 执行动作
    */
-  generate () {
+  generate() {
     let count = this.getPointCount()
     if (count < 2) {
       return false
@@ -44,7 +47,7 @@ class CurveFlag extends Polygon {
    * @param points
    * @returns {Array}
    */
-  calculatePonits (points) {
+  calculatePonits(points) {
     let components = []
     // 至少需要两个控制点
     if (points.length > 1) {
@@ -89,7 +92,7 @@ class CurveFlag extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap (map) {
+  setMap(map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -101,7 +104,7 @@ class CurveFlag extends Polygon {
    * 获取当前地图对象
    * @returns {Map|*}
    */
-  getMap () {
+  getMap() {
     return this.map
   }
 
@@ -109,7 +112,7 @@ class CurveFlag extends Polygon {
    * 判断是否是Plot
    * @returns {boolean}
    */
-  isPlot () {
+  isPlot() {
     return true
   }
 
@@ -117,7 +120,7 @@ class CurveFlag extends Polygon {
    * 设置坐标点
    * @param value
    */
-  setPoints (value) {
+  setPoints(value) {
     this.points = !value ? [] : value
     if (this.points.length >= 1) {
       this.generate()
@@ -128,7 +131,7 @@ class CurveFlag extends Polygon {
    * 获取坐标点
    * @returns {Array.<T>}
    */
-  getPoints () {
+  getPoints() {
     return this.points.slice(0)
   }
 
@@ -136,7 +139,7 @@ class CurveFlag extends Polygon {
    * 获取点数量
    * @returns {Number}
    */
-  getPointCount () {
+  getPointCount() {
     return this.points.length
   }
 
@@ -145,7 +148,7 @@ class CurveFlag extends Polygon {
    * @param point
    * @param index
    */
-  updatePoint (point, index) {
+  updatePoint(point, index) {
     if (index >= 0 && index < this.points.length) {
       this.points[index] = point
       this.generate()
@@ -156,14 +159,14 @@ class CurveFlag extends Polygon {
    * 更新最后一个坐标
    * @param point
    */
-  updateLastPoint (point) {
+  updateLastPoint(point) {
     this.updatePoint(point, this.points.length - 1)
   }
 
   /**
    * 结束绘制
    */
-  finishDrawing () {
+  finishDrawing() {
   }
 }
 
