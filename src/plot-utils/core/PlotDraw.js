@@ -21,6 +21,7 @@ import { createVectorLayer } from '../Utils/layerUtils'
 import PlotTextBox from '../Geometry/Text/PlotTextBox'
 import * as Plots from '../Geometry/index'
 import * as PlotTypes from '../Utils/PlotTypes'
+import GeoJSON from "ol/format/GeoJSON";
 
 class PlotDraw extends Observable {
   constructor (map, params) {
@@ -99,7 +100,7 @@ class PlotDraw extends Observable {
   }
 
   /**
-   * 创建Plot
+   * 创建Plot，标绘类型
    * @param type
    * @param points
    * @param _params
@@ -369,14 +370,17 @@ class PlotDraw extends Observable {
    * 绘制结束
    */
   drawEnd (event) {
-    this.dispatchSync('drawEnd', {
-      type: 'drawEnd',
-      originalEvent: event,
-      feature: this.feature
-    })
+    // this.dispatchSync('drawEnd', {
+    //   type: 'drawEnd',
+    //   originalEvent: event,
+    //   feature: this.feature
+    // })
     if (this.feature && this.options['isClear']) {
       this.drawLayer.getSource().removeFeature(this.feature)
     }
+    // console.log('PlotDraw绘制结束事件',event)
+    // console.log('PlotDraw绘制结束图层',this.feature)
+    console.log('PlotDraw绘制结束geojson数据',JSON.parse(new GeoJSON().writeFeature(this.feature)) )
     this.disActive()
   }
 

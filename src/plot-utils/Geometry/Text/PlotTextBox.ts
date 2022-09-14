@@ -6,26 +6,26 @@ import { merge, bindAll } from '../../Utils/utils'
 import { on, off, hasClass, setStyle, getStyle } from '../../Utils/domUtils'
 
 class PlotTextBox extends Overlay {
-  constructor (options = {}) {
-    const [id, element, offset, stopEvent, positioning, insertFirst,
-      autoPan, autoPanAnimation, autoPanMargin, className] = [
-      options['id'], options['element'], options['offset'], options['stopEvent'],
-      options['positioning'], options['insertFirst'], options['autoPan'],
-      options['autoPanAnimation'], options['autoPanMargin'],
-      (options['className'] ? options['className'] : 'ol-plot-text-editor')
-    ]
+  constructor(options = {}) {
+    // const [id, element, offset, stopEvent, positioning, insertFirst,
+    //   autoPan, autoPanAnimation, autoPanMargin, className] = [
+    //     options['id'], options['element'], options['offset'], options['stopEvent'],
+    //     options['positioning'], options['insertFirst'], options['autoPan'],
+    //     options['autoPanAnimation'], options['autoPanMargin'],
+    //     (options['className'] ? options['className'] : 'ol-plot-text-editor')
+    //   ]
     super({
-      id,
-      element,
-      stopEvent,
-      insertFirst,
-      autoPan,
-      autoPanAnimation,
-      autoPanMargin,
-      className
+      id: options['id'],
+      element: options['element'],
+      stopEvent: options['stopEvent'],
+      insertFirst: options['insertFirst'],
+      autoPan: options['autoPan'],
+      autoPanAnimation: options['autoPanAnimation'],
+      autoPanMargin: options['autoPanMargin'],
+      className: options['className']
     })
-    this.setOffset(offset !== undefined ? offset : [0, 0])
-    this.setPositioning(positioning !== undefined ? positioning : 'center-center')
+    this.setOffset(options['offset'] !== undefined ? options['offset'] : [0, 0])
+    this.setPositioning(options['positioning'] !== undefined ? options['positioning'] : 'center-center')
 
     /**
      * 地图交互
@@ -101,12 +101,68 @@ class PlotTextBox extends Overlay {
      */
     this.createTextContent(options)
   }
+  /**
+     * 地图交互
+     * @type {undefined}
+     */
+  mapDragPan
+
+  /**
+   * is click
+   * @type {boolean}
+   * @private
+   */
+  isClick_ = false
+
+  /**
+   * 是否处于拖拽状态
+   * @type {boolean}
+   * @private
+   */
+  dragging_ = false
+
+  /**
+   * 当前气泡是否获取焦点
+   * @type {boolean}
+   * @private
+   */
+  isFocus_ = false
+
+  /**
+   * 当前配置信息
+   * @type {{}}
+   * @private
+   */
+  options_;
+
+  /**
+   * 当前气泡位置
+   * @type {Array}
+   * @private
+   */
+  _position;
+
+  /**
+   * 防抖延时
+   * @type {null}
+   * @private
+   */
+  handleTimer_ = null
+
+  /**
+   * 每次鼠标按下的位置
+   * @type {Array}
+   * @private
+   */
+  currentPixel_ = [];
+  /**鼠标样式 */
+  preCursor_;
 
   /**
    * 创建文本框父容器
    * @param options
    */
-  createTextContent (options) {
+  createTextContent(options) {
     const _className = options.className || 'ol-plot-text-editor'
     const content = document.createElement('textarea')
     content.className = _className
@@ -114,7 +170,7 @@ class PlotTextBox extends Overlay {
     content.style.height = options['height'] + 'px'
     content.style.minHeight = options['minHeight'] + 'px'
     content.setAttribute('id', options['id'])
-    content.setAttribute('autofocus', true)
+    content.setAttribute('autofocus', (true as any))
     autosize(content)
     on(content, 'focus', this.handleFocus_)
     on(content, 'blur', this.handleBlur_)
@@ -126,11 +182,12 @@ class PlotTextBox extends Overlay {
     this.createCloseButton(options)
     this.createResizeButton(options)
     this.setPosition(this._position)
-    this.dispatchEvent('textBoxDrawEnd', {
-      overlay: this,
-      element: content,
-      uuid: options['id']
-    })
+    // this.dispatchEvent('textBoxDrawEnd', {
+    //   overlay: this,
+    //   element: content,
+    //   uuid: options['id']
+    // })
+    this.dispatchEvent('textBoxDrawEnd')
   }
 
   /**
@@ -138,8 +195,8 @@ class PlotTextBox extends Overlay {
    * @returns {string}
    * @private
    */
-  getTextAreaFromContent_ () {
-    let _node = ''
+  getTextAreaFromContent_() {
+    let _node: HTMLTextAreaElement = null;
     const childrens_ = Array.prototype.slice.call((this.element && this.element.children), 0)
     if (childrens_.length > 0) {
       childrens_.every(ele => {
@@ -158,7 +215,7 @@ class PlotTextBox extends Overlay {
    * 创建关闭按钮
    * @param options
    */
-  createCloseButton (options) {
+  createCloseButton(options) {
     const _closeSpan = document.createElement('span')
     _closeSpan.className = 'ol-plot-text-editor-close'
     _closeSpan.setAttribute('data-id', options['id'])
@@ -171,7 +228,7 @@ class PlotTextBox extends Overlay {
    * 创建文本框大小调整按钮
    * @param options
    */
-  createResizeButton (options) {
+  createResizeButton(options) {
     const _resizeSpan = document.createElement('span')
     _resizeSpan.className = 'ol-plot-text-editor-resize'
     _resizeSpan.setAttribute('data-id', options['id'])
@@ -187,7 +244,7 @@ class PlotTextBox extends Overlay {
    * @param event
    * @private
    */
-  resizeButtonMoveHandler_ (event) {
+  resizeButtonMoveHandler_(event) {
     const pixel_ = event.pixel
     const element_ = this.getTextAreaFromContent_()
     if (pixel_.length < 1 || this.currentPixel_.length < 1 || !element_) return
@@ -206,7 +263,7 @@ class PlotTextBox extends Overlay {
    * @param event
    * @private
    */
-  handleResizeMouseMove_ (event) {
+  handleResizeMouseMove_(event) {
     event.stopImmediatePropagation()
   }
 
@@ -215,7 +272,7 @@ class PlotTextBox extends Overlay {
    * @param event
    * @private
    */
-  handleResizeMouseDown_ (event) {
+  handleResizeMouseDown_(event) {
     if (!this.getMap()) return
     this.currentPixel_ = [event.x, event.y]
     this.getMap().on('pointermove', this.resizeButtonMoveHandler_)
@@ -227,7 +284,7 @@ class PlotTextBox extends Overlay {
    * @param event
    * @private
    */
-  handleResizeMouseUp_ (event) {
+  handleResizeMouseUp_(event) {
     if (!this.getMap()) return
     this.getMap().un('pointermove', this.resizeButtonMoveHandler_)
     off(this.getMap().getViewport(), 'mouseup', this.handleResizeMouseUp_)
@@ -238,7 +295,7 @@ class PlotTextBox extends Overlay {
    * 处理关闭事件
    * @param event
    */
-  closeCurrentPlotText (event) {
+  closeCurrentPlotText(event) {
     if (!this.getMap()) return
     if (event && hasClass(event.target, 'ol-plot-text-editor-close')) {
       let _id = event.target.getAttribute('data-id')
@@ -255,7 +312,7 @@ class PlotTextBox extends Overlay {
    * 处理获取焦点事件
    * @private
    */
-  handleFocus_ () {
+  handleFocus_() {
     this.isFocus_ = true
     if (this.getMap()) {
       this.getMap().set('activeTextArea', this)
@@ -267,7 +324,7 @@ class PlotTextBox extends Overlay {
    * 处理失去焦点事件
    * @private
    */
-  handleBlur_ () {
+  handleBlur_() {
     this.isFocus_ = false
     if (this.getMap()) {
       this.getMap().set('activeTextArea', null)
@@ -280,7 +337,7 @@ class PlotTextBox extends Overlay {
    * 处理拖拽开始
    * @private
    */
-  handleDragStart_ (event) {
+  handleDragStart_(event) {
     if (!this.getMap()) return
     if (!this.dragging_ && this.isMoveModel() && this.isFocus_) {
       this.handleTimer_ = window.setTimeout(() => {
@@ -302,7 +359,7 @@ class PlotTextBox extends Overlay {
    * @param event
    * @private
    */
-  handleDragDrag_ (event) {
+  handleDragDrag_(event) {
     if (this.dragging_) {
       this.element.style.cursor = 'move'
       this._position = this.getMap().getCoordinateFromPixel([event.clientX, event.clientY])
@@ -314,7 +371,7 @@ class PlotTextBox extends Overlay {
    * 处理拖拽
    * @private
    */
-  handleDragEnd_ (event) {
+  handleDragEnd_(event) {
     this.isClick_ = false
     window.clearTimeout(this.handleTimer_)
     this.handleTimer_ = null
@@ -332,7 +389,7 @@ class PlotTextBox extends Overlay {
    * @param event
    * @private
    */
-  handleClick_ (event) {
+  handleClick_(event) {
     if (event.target === this.element) {
       this.isClick_ = true
     } else {
@@ -344,7 +401,7 @@ class PlotTextBox extends Overlay {
    * 是否处于选择模式
    * @returns {boolean}
    */
-  isMoveModel () {
+  isMoveModel() {
     const range = window.getSelection().getRangeAt(0)
     return range.collapsed
   }
@@ -353,7 +410,7 @@ class PlotTextBox extends Overlay {
    * 设置样式
    * @param style
    */
-  setStyle (style = {}) {
+  setStyle(style = {}) {
     const _element = this.getTextAreaFromContent_()
     if (_element) {
       for (let key in style) {
@@ -368,7 +425,7 @@ class PlotTextBox extends Overlay {
    * 获取当前样式
    * @returns {CSSStyleDeclaration}
    */
-  getStyle () {
+  getStyle() {
     const _style = {}
     const _element = this.getTextAreaFromContent_()
     if (_element) {
@@ -383,7 +440,7 @@ class PlotTextBox extends Overlay {
    * set value
    * @param value
    */
-  setValue (value) {
+  setValue(value) {
     const _element = this.getTextAreaFromContent_()
     if (_element) {
       _element.value = value
@@ -398,7 +455,7 @@ class PlotTextBox extends Overlay {
    * get value
    * @returns {*}
    */
-  getValue () {
+  getValue() {
     const _element = this.getTextAreaFromContent_()
     if (_element) {
       return _element.value
@@ -411,7 +468,7 @@ class PlotTextBox extends Overlay {
    * 获取宽度
    * @returns {number}
    */
-  getWidth () {
+  getWidth() {
     const element_ = this.getTextAreaFromContent_()
     if (element_ && element_.offsetWidth) {
       return element_.offsetWidth
@@ -424,7 +481,7 @@ class PlotTextBox extends Overlay {
    * 获取高度
    * @returns {number}
    */
-  getHeight () {
+  getHeight() {
     const element_ = this.getTextAreaFromContent_()
     if (element_ && element_.offsetHeight) {
       return element_.offsetHeight
@@ -436,7 +493,7 @@ class PlotTextBox extends Overlay {
   /**
    * 激活地图的拖拽平移
    */
-  enableMapDragPan () {
+  enableMapDragPan() {
     const _map = this.getMap()
     if (!_map) return
     if (this.mapDragPan && this.mapDragPan instanceof $DragPan) {
@@ -448,7 +505,7 @@ class PlotTextBox extends Overlay {
   /**
    * 禁止地图的拖拽平移
    */
-  disableMapDragPan () {
+  disableMapDragPan() {
     const _map = this.getMap()
     if (!_map) return
     let interactions = _map.getInteractions().getArray()
@@ -467,7 +524,7 @@ class PlotTextBox extends Overlay {
    * set map
    * @param map
    */
-  setMap (map) {
+  setMap(map) {
     super.setMap(map)
     if (map && map instanceof Map) {
       this.setStyle(merge(DEF_TEXT_STYEL, this.options_['style']))
