@@ -7,6 +7,7 @@ import XYZ from 'ol/source/XYZ';
 import OlPlot from 'src/plot-utils';
 import Select from 'ol/interaction/Select';
 import Modify from 'ol/interaction/Modify';
+import { defaults } from 'ol/interaction';
 
 @Component({
   selector: 'app-root',
@@ -41,6 +42,9 @@ export class AppComponent {
         maxZoom: 20,
         minZoom: 6,
         projection: 'EPSG:4326'
+      }),
+      interactions: defaults({
+        doubleClickZoom: false
       })
     });
     this.mapPlot = new OlPlot(this.map, {})
