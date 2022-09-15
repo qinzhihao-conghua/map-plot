@@ -82,6 +82,7 @@ export class AppComponent {
     // this.mapPlot.plotEdit.activate(features);
   }
   cancelEdit() {
+    this.mapPlot.plotEdit.deactivate()
     this.map.removeInteraction(this.selectEdit);
     this.map.removeInteraction(this.modifyEdit);
   }
