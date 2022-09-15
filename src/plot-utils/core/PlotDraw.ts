@@ -21,7 +21,8 @@ import { createVectorLayer } from '../Utils/layerUtils'
 import PlotTextBox from '../Geometry/Text/PlotTextBox'
 import * as Plots from '../Geometry/index'
 import * as PlotTypes from '../Utils/PlotTypes'
-import GeoJSON from "ol/format/GeoJSON";
+// import GeoJSON from "ol/format/GeoJSON";
+import { GeoJSON } from 'ol/format';
 
 class PlotDraw extends Observable {
   constructor(map, params) {

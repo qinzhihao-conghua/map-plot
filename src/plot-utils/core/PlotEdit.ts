@@ -267,13 +267,13 @@ class PlotEdit extends Observable {
       if (!this.mouseOver) {
         this.mouseOver = true
         this.map.getTargetElement().style.cursor = 'move'
-        this.map.on('pointerdown', this.plotMouseDownHandler)
+        // this.map.on('pointerdown', this.plotMouseDownHandler)
       }
     } else {
       if (this.mouseOver) {
         this.mouseOver = false
         this.map.getTargetElement().style.cursor = 'default'
-        this.map.un('pointerdown', this.plotMouseDownHandler)
+        // this.map.un('pointerdown', this.plotMouseDownHandler)
       }
     }
     return feature
@@ -287,7 +287,7 @@ class PlotEdit extends Observable {
     this.ghostControlPoints = this.getControlPoints()
     this.startPoint = event.coordinate
     this.disableMapDragPan()
-    this.map.on('pointerup', this.plotMouseUpHandler)
+    // this.map.on('pointerup', this.plotMouseUpHandler)
     this.map.on('pointerdrag', this.plotMouseMoveHandler)
   }
 
@@ -319,7 +319,7 @@ class PlotEdit extends Observable {
    */
   plotMouseUpHandler(event) {
     this.enableMapDragPan()
-    this.map.un('pointerup', this.plotMouseUpHandler)
+    // this.map.un('pointerup', this.plotMouseUpHandler)
     this.map.un('pointerdrag', this.plotMouseMoveHandler)
   }
 
@@ -330,8 +330,8 @@ class PlotEdit extends Observable {
     this.map.un('pointermove', this.plotMouseOverOutHandler)
     this.map.un('pointermove', this.controlPointMouseMoveHandler)
     htmlUtils.off(this.mapViewport, 'mouseup', this.controlPointMouseUpHandler)
-    this.map.un('pointerdown', this.plotMouseDownHandler)
-    this.map.un('pointerup', this.plotMouseUpHandler)
+    // this.map.un('pointerdown', this.plotMouseDownHandler)
+    // this.map.un('pointerup', this.plotMouseUpHandler)
     this.map.un('pointerdrag', this.plotMouseMoveHandler)
   }
 
