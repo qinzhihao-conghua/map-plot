@@ -20,6 +20,7 @@ import PlotTextBox from '../Geometry/Text/PlotTextBox'
 import * as Geometry from '../Geometry'
 import { createVectorLayer, getLayerByLayerName } from '../Utils/layerUtils'
 import { BASE_LAYERNAME } from '../Constants'
+import { Coordinate } from 'ol/coordinate'
 class PlotUtils {
   constructor(map, options) {
     if (map && map instanceof Map) {
@@ -32,14 +33,13 @@ class PlotUtils {
     this.layerName = ((this.options && this.options['layerName']) ? this.options['layerName'] : BASE_LAYERNAME)
   }
   type: string;
-  points: Array<any> = [];
+  points: Array<Coordinate> = [];
   map: Map;
   options;
   layerName: string;
   /**
    * 获取样式信息
    * @param feature
-   * @returns {boolean}
    */
   getBaseStyle(feature) {
     let style = feature.getStyle()
@@ -48,7 +48,7 @@ class PlotUtils {
       if (layer && layer instanceof VectorLayer) {
         style = layer.getStyle()
       } else {
-        return false
+        // return false
       }
     }
     return style
@@ -57,16 +57,15 @@ class PlotUtils {
   /**
    * 设置点类型的图标样式
    * @param feature
-   * @param image
+   * @param image 图像的样式，未明确类型
    */
-  setIcon(feature, image) {
+  setIcon(feature: Feature, image) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
         let tempStyle = style.clone()
-        // TODO: 原型链问题待处理
-        // let _image = this._getImage(image)
-        let _image = null;
+        let _image = this.getImage_(image)
+        // let _image = null;
         if (_image) {
           tempStyle.setImage(_image)
           feature.setStyle(tempStyle)
@@ -81,9 +80,8 @@ class PlotUtils {
    * 设置背景颜色
    * @param feature
    * @param backgroundColor
-   * @returns {boolean}
    */
-  setBackgroundColor(feature, backgroundColor) {
+  setBackgroundColor(feature: Feature, backgroundColor: string) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -108,7 +106,7 @@ class PlotUtils {
    * @param feature
    * @param opacity
    */
-  setOpacity(feature, opacity) {
+  setOpacity(feature: Feature, opacity: number) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -135,7 +133,7 @@ class PlotUtils {
    * @param feature
    * @param borderColor
    */
-  setBorderColor(feature, borderColor) {
+  setBorderColor(feature: Feature, borderColor: string) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -154,7 +152,7 @@ class PlotUtils {
    * @param feature
    * @param borderWidth
    */
-  setBorderWidth(feature, borderWidth) {
+  setBorderWidth(feature: Feature, borderWidth: number) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -172,9 +170,8 @@ class PlotUtils {
    * 处理背景色
    * @param color
    * @param opacity
-   * @returns {string}
    */
-  handleBackgroundColor(color, opacity) {
+  handleBackgroundColor(color, opacity: number) {
     try {
       if (!opacity) opacity = 1
       let tempColor = asArray(color)
@@ -188,9 +185,8 @@ class PlotUtils {
   /**
    * 获取颜色值
    * @param color
-   * @returns {string}
    */
-  getColor(color) {
+  getColor(color: string) {
     try {
       let colorTarget = asArray(color)
       return (asString(colorTarget))
@@ -202,7 +198,6 @@ class PlotUtils {
   /**
    * 去除无值的字段
    * @param obj
-   * @returns {*}
    */
   fixObject(obj) {
     if (obj && typeof obj === 'object') {
@@ -218,7 +213,6 @@ class PlotUtils {
   /**
    * 获取stroke
    * @param style
-   * @returns {*}
    */
   getStroke_(style) {
     let stroke = null
@@ -241,7 +235,6 @@ class PlotUtils {
   /**
    * 获取填充色
    * @param style
-   * @returns {*}
    * @private
    */
   getFill_(style) {
@@ -260,7 +253,6 @@ class PlotUtils {
   /**
    * 获取文本信息
    * @param style
-   * @returns {*}
    * @private
    */
   getText_(style) {
@@ -288,7 +280,6 @@ class PlotUtils {
   /**
    * 获取图像信息
    * @param style
-   * @returns {*}
    * @private
    */
   getImage_(style) {
@@ -331,9 +322,8 @@ class PlotUtils {
   /**
    * 获取样式配置
    * @param feature
-   * @returns {{fill: {fillColor: string, opacity: number}, stroke: *, image: *, text: *}}
    */
-  getStyleCode(feature) {
+  getStyleCode(feature: Feature) {
     try {
       if (feature && feature instanceof Feature) {
         let style = this.getBaseStyle(feature)
@@ -393,7 +383,6 @@ class PlotUtils {
 
   /**
    * 获取所有的要素包含样式信息的GeoJSON
-   * @returns {Array}
    */
   getFeatures() {
     let rFeatures = []

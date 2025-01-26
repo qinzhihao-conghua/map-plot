@@ -35,7 +35,6 @@ const StyleFactory = function (options) {
 /**
  * 获取规则样式图形
  * @param options
- * @returns {*}
  * @private
  */
 StyleFactory.prototype._getRegularShape = function (options) {
@@ -63,7 +62,6 @@ StyleFactory.prototype._getRegularShape = function (options) {
 /**
  * 获取图标样式
  * @param options
- * @returns {*}
  * @private
  */
 StyleFactory.prototype._getImage = function (options) {
@@ -84,10 +82,9 @@ StyleFactory.prototype._getImage = function (options) {
 /**
  * 获取icon
  * @param options
- * @returns {ol.style.Icon}
  * @private
  */
-StyleFactory.prototype._getIcon = function (options: any) {
+StyleFactory.prototype._getIcon = function (options: any): Icon {
   try {
     options = options || {}
     let icon = new Icon({
@@ -119,10 +116,9 @@ StyleFactory.prototype._getIcon = function (options: any) {
 /**
  * 获取线条样式
  * @param options
- * @returns {Stroke}
  * @private
  */
-StyleFactory.prototype._getStroke = function (options) {
+StyleFactory.prototype._getStroke = function (options): Stroke {
   try {
     options = options || {}
     let stroke = new Stroke({
@@ -146,10 +142,9 @@ StyleFactory.prototype._getStroke = function (options) {
 /**
  * 获取样式文本
  * @param options
- * @returns {Text}
  * @private
  */
-StyleFactory.prototype._getText = function (options) {
+StyleFactory.prototype._getText = function (options): Text {
   try {
     let text = new Text({
       font: ((options['textFont'] && typeof options['textFont'] === 'string') ? options['textFont'] : '10px sans-serif'),
@@ -173,10 +168,9 @@ StyleFactory.prototype._getText = function (options) {
 /**
  * 获取填充颜色
  * @param options
- * @returns {Fill}
  * @private
  */
-StyleFactory.prototype._getFill = function (options) {
+StyleFactory.prototype._getFill = function (options): Fill {
   try {
     options = options || {}
     let fill = new Fill({

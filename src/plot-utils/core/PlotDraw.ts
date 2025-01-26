@@ -14,7 +14,7 @@ import {
 import Feature from 'ol/Feature'
 import { createBox } from 'ol/interaction/Draw'
 
-import Observable from 'observable-emit'
+// import Observable from 'observable-emit'
 import { getuuid, MathDistance, bindAll } from '../Utils/utils'
 import { BASE_LAYERNAME } from '../Constants'
 import { createVectorLayer } from '../Utils/layerUtils'
@@ -23,10 +23,12 @@ import * as Plots from '../Geometry/index'
 import * as PlotTypes from '../Utils/PlotTypes'
 // import GeoJSON from "ol/format/GeoJSON";
 import { GeoJSON } from 'ol/format';
-
-class PlotDraw extends Observable {
-  constructor(map, params) {
-    super()
+import VectorLayer from 'ol/layer/Vector'
+import MapBrowserEvent from 'ol/MapBrowserEvent';
+import { Coordinate } from 'ol/coordinate'
+class PlotDraw {
+  constructor(map: Map) {
+    // super()
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -48,70 +50,38 @@ class PlotDraw extends Observable {
       'mapMouseMoveHandler'
     ], this)
 
-    /**
-     * 当前矢量图层
-     * @type {*}
-     */
-    this.drawLayer = createVectorLayer(this.map, this.layerName, {
-      create: true
-    })
+    this.drawLayer = createVectorLayer(this.map, this.layerName, { create: true })
     this.drawLayer.setZIndex(this.options['zIndex'] || 99)
   }
   map: Map;
   options = {};
-  drawLayer;
-  layerName;
-  /**
-   * 交互点
-   * @type {null}
-   */
-  points = null
-  /**
-   * 当前标绘工具
-   * @type {null}
-   */
+  /** 当前矢量图层 */
+  drawLayer: VectorLayer<any>;
+  layerName: string;
+  /** 交互点 */
+  points: Array<Coordinate> = null;
+  /** 当前标绘工具 */
   plot = null
-  /**
-   * 当前要素
-   * @type {null}
-   */
-  feature = null
-  /**
-   * 标绘类型
-   * @type {null}
-   */
-  plotType = null
-  /**
-   * 当前标绘参数
-   * @type {null}
-   */
+  /** 当前要素 */
+  feature: Feature<any> = null
+  /** 标绘类型 */
+  plotType: string = null
+  /** 当前标绘参数，给标绘图形的参数，目前发现是在new 类型的时候this.set('params', this.options) */
   plotParams = null
-  /**
-   * 当前地图视图
-   * @type {Element}
-   */
-  mapViewport = null;
-  /**
-   * 地图双击交互
-   * @type {null}
-   */
-  dblClickZoomInteraction = null
-
-  /**
-   * draw交互工具
-   * @type {null}
-   * @private
-   */
-  drawInteraction_ = null
+  /** 当前地图视图 */
+  mapViewport: Element = null;
+  /** 地图双击交互 */
+  dblClickZoomInteraction: DoubleClickZoom = null
+  /** draw交互工具，就是Draw实例 */
+  private drawInteraction_: $DrawInteraction = null
 
   /**
    * 创建Plot，标绘类型
-   * @param type
-   * @param points
-   * @param _params
-   * @returns {*}
+   * @param type 类型
+   * @param points 标会点集合
+   * @param _params 参数
    */
-  createPlot(type, points, _params) {
+  createPlot(type: string, points, _params) {
     let params = _params || {}
     switch (type) {
       case PlotTypes.TEXTAREA:
@@ -177,7 +147,7 @@ class PlotDraw extends Observable {
    * @param type
    * @param params
    */
-  active(type, params = {}) {
+  active(type: string, params = {}) {
     this.disActive()
     this.deactiveMapTools()
     this.plotType = type
@@ -272,7 +242,6 @@ class PlotDraw extends Observable {
 
   /**
    * PLOT是否处于激活状态
-   * @returns {boolean}
    */
   isDrawing() {
     return !!this.plotType
@@ -283,7 +252,7 @@ class PlotDraw extends Observable {
    * 激活工具后第一次点击事件
    * @param event
    */
-  mapFirstClickHandler(event) {
+  mapFirstClickHandler(event: MapBrowserEvent<any>) {
     // 解绑
     this.map.un('click', this.mapFirstClickHandler)
     this.points.push(event.coordinate)
@@ -312,9 +281,8 @@ class PlotDraw extends Observable {
   /**
    * 地图点击事件处理
    * @param event
-   * @returns {boolean}
    */
-  mapNextClickHandler(event) {
+  mapNextClickHandler(event: MapBrowserEvent<any>) {
     if (!this.plot.freehand) {
       if (MathDistance(event.coordinate, this.points[this.points.length - 1]) < 0.0001) {
         return false
@@ -335,7 +303,7 @@ class PlotDraw extends Observable {
    * 地图双击事件处理
    * @param event
    */
-  mapDoubleClickHandler(event) {
+  mapDoubleClickHandler(event: MapBrowserEvent<any>) {
     event.preventDefault()
     this.plot.finishDrawing()
     this.drawEnd(event)
@@ -345,9 +313,8 @@ class PlotDraw extends Observable {
    * 地图事件处理
    * 鼠标移动事件
    * @param event
-   * @returns {boolean}
    */
-  mapMouseMoveHandler(event) {
+  mapMouseMoveHandler(event: MapBrowserEvent<any>) {
     let coordinate = event.coordinate
     if (MathDistance(coordinate, this.points[this.points.length - 1]) < 0.0001) {
       return false
@@ -374,7 +341,7 @@ class PlotDraw extends Observable {
   /**
    * 绘制结束
    */
-  drawEnd(event) {
+  drawEnd(event: MapBrowserEvent<any>) {
     // this.dispatchSync('drawEnd', {
     //   type: 'drawEnd',
     //   originalEvent: event,

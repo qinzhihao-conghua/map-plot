@@ -24,7 +24,6 @@ class Circle extends Polygon {
   fixPointCount: number;
   /**
    * 获取标绘类型
-   * @returns {*}
    */
   getPlotType() {
     return this.type
@@ -45,7 +44,6 @@ class Circle extends Polygon {
    * 对圆边线进行插值
    * @param center
    * @param radius
-   * @returns {null}
    */
   generatePoints(center, radius) {
     let [x, y, angle, points] = [null, null, null, []]
@@ -62,7 +60,7 @@ class Circle extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap(map) {
+  setMap(map: Map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -72,7 +70,6 @@ class Circle extends Polygon {
 
   /**
    * 获取当前地图对象
-   * @returns {{}|*}
    */
   getMap() {
     return this.map
@@ -80,7 +77,6 @@ class Circle extends Polygon {
 
   /**
    * 判断是否是Plot
-   * @returns {boolean}
    */
   isPlot() {
     return true
@@ -99,7 +95,6 @@ class Circle extends Polygon {
 
   /**
    * 获取坐标点
-   * @returns {Array.<T>}
    */
   getPoints() {
     return this.points.slice(0)
@@ -107,7 +102,6 @@ class Circle extends Polygon {
 
   /**
    * 获取点数量
-   * @returns {Number}
    */
   getPointCount() {
     return this.points.length

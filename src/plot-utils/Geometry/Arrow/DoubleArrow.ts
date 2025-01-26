@@ -38,7 +38,6 @@ class DoubleArrow extends Polygon {
   fixPointCount: number;
   /**
    * 获取标绘类型
-   * @returns {*}
    */
   getPlotType() {
     return this.type
@@ -101,7 +100,6 @@ class DoubleArrow extends Polygon {
    * @param pnt2
    * @param pnt3
    * @param clockWise
-   * @returns {Array.<T>}
    */
   getArrowPoints(pnt1, pnt2, pnt3, clockWise) {
     let midPnt = PlotUtils.Mid(pnt1, pnt2)
@@ -136,7 +134,6 @@ class DoubleArrow extends Polygon {
   /**
    * 插值头部点
    * @param points
-   * @returns {[*,*,*,*,*]}
    */
   getArrowHeadPoints(points) {
     try {
@@ -164,7 +161,6 @@ class DoubleArrow extends Polygon {
    * @param neckLeft
    * @param neckRight
    * @param tailWidthFactor
-   * @returns {Array.<*>}
    */
   getArrowBodyPoints(points, neckLeft, neckRight, tailWidthFactor) {
     let allLen = PlotUtils.wholeDistance(points)
@@ -190,7 +186,6 @@ class DoubleArrow extends Polygon {
    * @param linePnt1
    * @param linePnt2
    * @param point
-   * @returns {*}
    */
   getTempPoint4(linePnt1, linePnt2, point) {
     try {
@@ -229,7 +224,7 @@ class DoubleArrow extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap(map) {
+  setMap(map: Map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -239,7 +234,6 @@ class DoubleArrow extends Polygon {
 
   /**
    * 获取当前地图对象
-   * @returns {Map|*}
    */
   getMap() {
     return this.map
@@ -247,7 +241,6 @@ class DoubleArrow extends Polygon {
 
   /**
    * 判断是否是Plot
-   * @returns {boolean}
    */
   isPlot() {
     return true
@@ -266,7 +259,6 @@ class DoubleArrow extends Polygon {
 
   /**
    * 获取坐标点
-   * @returns {Array.<T>}
    */
   getPoints() {
     return this.points.slice(0)
@@ -274,7 +266,6 @@ class DoubleArrow extends Polygon {
 
   /**
    * 获取点数量
-   * @returns {Number}
    */
   getPointCount() {
     return this.points.length

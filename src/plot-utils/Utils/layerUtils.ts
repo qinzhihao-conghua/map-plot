@@ -11,16 +11,17 @@ import {
 } from 'ol/layer'
 
 import { Vector as $VectorSource } from 'ol/source'
-
+import { Map } from 'ol';
+import BaseLayer from 'ol/layer/Base';
 /**
  * 通过layerName获取图层
- * @param map
- * @param layerName
- * @returns {*}
+ * @param map 地图实例
+ * @param layerName 图层名称
+ * @returns 返回一个leyer类型
  */
-const getLayerByLayerName = function (map, layerName) {
+const getLayerByLayerName = function (map: Map, layerName: string) {
   try {
-    let targetLayer = null
+    let targetLayer: $VectorLayer<any> = null
     if (map) {
       let layers = map.getLayers().getArray()
       targetLayer = getLayerInternal(layers, 'layerName', layerName)
@@ -33,13 +34,12 @@ const getLayerByLayerName = function (map, layerName) {
 
 /**
  * 内部处理获取图层方法
- * @param layers
+ * @param layers 图层集合
  * @param key
  * @param value
- * @returns {*}
  */
-const getLayerInternal = function (layers, key, value) {
-  let _target = null
+const getLayerInternal = function (layers: Array<BaseLayer>, key: string, value: string) {
+  let _target: $VectorLayer<any> = null
   if (layers.length > 0) {
     layers.every(layer => {
       if (layer instanceof $Group) {
@@ -51,7 +51,7 @@ const getLayerInternal = function (layers, key, value) {
           return true
         }
       } else if (layer.get(key) === value) {
-        _target = layer
+        _target = layer as $VectorLayer<any>
         return false
       } else {
         return true
@@ -63,22 +63,21 @@ const getLayerInternal = function (layers, key, value) {
 
 /**
  * 创建临时图层
- * @param map
- * @param layerName
- * @param params
- * @returns {*}
+ * @param map 地图实例
+ * @param layerName 图层名称
+ * @param params {create:boolean,selectable:boolean} 获取不到图层且 create 为true的时候会生成一个新的，样式是默认的，后续可以优化
  */
-const createVectorLayer = function (map, layerName, params) {
+const createVectorLayer = function (map: Map, layerName: string, params: { create?: boolean, selectable?: boolean }) {
   try {
     if (map) {
-      let vectorLayer = getLayerByLayerName(map, layerName)
+      let vectorLayer: $VectorLayer<any> = getLayerByLayerName(map, layerName)
       if (!(vectorLayer instanceof $VectorLayer)) {
         vectorLayer = null
       }
       if (!vectorLayer) {
         if (params && params.create) {
           vectorLayer = new $VectorLayer({
-            // TODO:待缺人这三个字段是否已取消
+            // TODO:待确认这三个字段是否已取消
             // layerName: layerName,
             // params: params,
             // layerType: 'vector',

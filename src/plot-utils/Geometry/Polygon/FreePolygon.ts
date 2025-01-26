@@ -24,7 +24,6 @@ class FreePolygon extends Polygon {
   freehand: boolean;
   /**
    * 获取标绘类型
-   * @returns {*}
    */
   getPlotType() {
     return this.type
@@ -41,7 +40,7 @@ class FreePolygon extends Polygon {
    * 设置地图对象
    * @param map
    */
-  setMap(map) {
+  setMap(map: Map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -51,7 +50,6 @@ class FreePolygon extends Polygon {
 
   /**
    * 获取当前地图对象
-   * @returns {Map|*}
    */
   getMap() {
     return this.map
@@ -59,7 +57,6 @@ class FreePolygon extends Polygon {
 
   /**
    * 判断是否是Plot
-   * @returns {boolean}
    */
   isPlot() {
     return true
@@ -78,7 +75,6 @@ class FreePolygon extends Polygon {
 
   /**
    * 获取坐标点
-   * @returns {Array.<T>}
    */
   getPoints() {
     return this.points.slice(0)
@@ -86,7 +82,6 @@ class FreePolygon extends Polygon {
 
   /**
    * 获取点数量
-   * @returns {Number}
    */
   getPointCount() {
     return this.points.length

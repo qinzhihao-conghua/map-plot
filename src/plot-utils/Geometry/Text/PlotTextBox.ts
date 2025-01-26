@@ -29,55 +29,47 @@ class PlotTextBox extends Overlay {
 
     /**
      * 地图交互
-     * @type {undefined}
      */
     this.mapDragPan = undefined
 
     /**
      * is click
-     * @type {boolean}
      * @private
      */
     this.isClick_ = false
 
     /**
      * 是否处于拖拽状态
-     * @type {boolean}
      * @private
      */
     this.dragging_ = false
 
     /**
      * 当前气泡是否获取焦点
-     * @type {boolean}
      * @private
      */
     this.isFocus_ = false
 
     /**
      * 当前配置信息
-     * @type {{}}
      * @private
      */
     this.options_ = options
 
     /**
      * 当前气泡位置
-     * @type {Array}
      * @private
      */
     this._position = (options['position'] && options['position'].length > 0) ? options['position'] : []
 
     /**
      * 防抖延时
-     * @type {null}
      * @private
      */
     this.handleTimer_ = null
 
     /**
      * 每次鼠标按下的位置
-     * @type {Array}
      * @private
      */
     this.currentPixel_ = []
@@ -103,55 +95,47 @@ class PlotTextBox extends Overlay {
   }
   /**
      * 地图交互
-     * @type {undefined}
      */
   mapDragPan
 
   /**
    * is click
-   * @type {boolean}
    * @private
    */
   isClick_ = false
 
   /**
    * 是否处于拖拽状态
-   * @type {boolean}
    * @private
    */
   dragging_ = false
 
   /**
    * 当前气泡是否获取焦点
-   * @type {boolean}
    * @private
    */
   isFocus_ = false
 
   /**
    * 当前配置信息
-   * @type {{}}
    * @private
    */
   options_;
 
   /**
    * 当前气泡位置
-   * @type {Array}
    * @private
    */
   _position;
 
   /**
    * 防抖延时
-   * @type {null}
    * @private
    */
   handleTimer_ = null
 
   /**
    * 每次鼠标按下的位置
-   * @type {Array}
    * @private
    */
   currentPixel_ = [];
@@ -192,7 +176,6 @@ class PlotTextBox extends Overlay {
 
   /**
    * 获取文本框
-   * @returns {string}
    * @private
    */
   getTextAreaFromContent_() {
@@ -399,7 +382,6 @@ class PlotTextBox extends Overlay {
 
   /**
    * 是否处于选择模式
-   * @returns {boolean}
    */
   isMoveModel() {
     const range = window.getSelection().getRangeAt(0)
@@ -423,7 +405,6 @@ class PlotTextBox extends Overlay {
 
   /**
    * 获取当前样式
-   * @returns {CSSStyleDeclaration}
    */
   getStyle() {
     const _style = {}
@@ -453,7 +434,6 @@ class PlotTextBox extends Overlay {
 
   /**
    * get value
-   * @returns {*}
    */
   getValue() {
     const _element = this.getTextAreaFromContent_()
@@ -466,7 +446,6 @@ class PlotTextBox extends Overlay {
 
   /**
    * 获取宽度
-   * @returns {number}
    */
   getWidth() {
     const element_ = this.getTextAreaFromContent_()
@@ -479,7 +458,6 @@ class PlotTextBox extends Overlay {
 
   /**
    * 获取高度
-   * @returns {number}
    */
   getHeight() {
     const element_ = this.getTextAreaFromContent_()
@@ -524,7 +502,7 @@ class PlotTextBox extends Overlay {
    * set map
    * @param map
    */
-  setMap(map) {
+  setMap(map: Map) {
     super.setMap(map)
     if (map && map instanceof Map) {
       this.setStyle(merge(DEF_TEXT_STYEL, this.options_['style']))

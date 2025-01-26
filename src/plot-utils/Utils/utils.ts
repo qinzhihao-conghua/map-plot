@@ -1,21 +1,21 @@
-import * as Constants from '../Constants'
+import { Coordinate } from 'ol/coordinate';
+import * as Constants from '../Constants';
+import { Map } from 'ol';
 /**
  * 计算两个坐标之间的距离
  * @param pnt1
  * @param pnt2
- * @returns {number}
  * @constructor
  */
-export const MathDistance = (pnt1, pnt2) => {
+export const MathDistance = (pnt1: Array<number>, pnt2: Array<number>) => {
   return (Math.sqrt(Math.pow((pnt1[0] - pnt2[0]), 2) + Math.pow((pnt1[1] - pnt2[1]), 2)))
 }
 
 /**
  * 计算点集合的总距离
  * @param points
- * @returns {number}
  */
-export const wholeDistance = (points) => {
+export const wholeDistance = (points: Array<Array<number>>) => {
   let distance = 0
   if (points && Array.isArray(points) && points.length > 0) {
     points.forEach((item, index) => {
@@ -29,9 +29,8 @@ export const wholeDistance = (points) => {
 /**
  * 获取基础长度
  * @param points
- * @returns {number}
  */
-export const getBaseLength = (points) => {
+export const getBaseLength = (points: Array<Array<number>>) => {
   return Math.pow(wholeDistance(points), 0.99)
 }
 
@@ -39,10 +38,9 @@ export const getBaseLength = (points) => {
  * 求取两个坐标的中间值
  * @param point1
  * @param point2
- * @returns {[*,*]}
  * @constructor
  */
-export const Mid = (point1, point2) => {
+export const Mid = (point1: Array<number>, point2: Array<number>) => {
   return [(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2]
 }
 
@@ -52,7 +50,7 @@ export const Mid = (point1, point2) => {
  * @param point2
  * @param point3
  */
-export const getCircleCenterOfThreePoints = (point1, point2, point3) => {
+export const getCircleCenterOfThreePoints = (point1: Array<number>, point2: Array<number>, point3: Array<number>) => {
   let pntA = [(point1[0] + point2[0]) / 2, (point1[1] + point2[1]) / 2]
   let pntB = [pntA[0] - point1[1] + point2[1], pntA[1] + point1[0] - point2[0]]
   let pntC = [(point1[0] + point3[0]) / 2, (point1[1] + point3[1]) / 2]
@@ -66,9 +64,8 @@ export const getCircleCenterOfThreePoints = (point1, point2, point3) => {
  * @param pntB
  * @param pntC
  * @param pntD
- * @returns {[*,*]}
  */
-export const getIntersectPoint = (pntA, pntB, pntC, pntD) => {
+export const getIntersectPoint = (pntA: Array<number>, pntB: Array<number>, pntC: Array<number>, pntD: Array<number>) => {
   if (pntA[1] === pntB[1]) {
     let f = (pntD[0] - pntC[0]) / (pntD[1] - pntC[1])
     let x = f * (pntA[1] - pntC[1]) + pntC[0]
@@ -92,9 +89,8 @@ export const getIntersectPoint = (pntA, pntB, pntC, pntD) => {
  * 获取方位角（地平经度）
  * @param startPoint
  * @param endPoint
- * @returns {*}
  */
-export const getAzimuth = (startPoint, endPoint) => {
+export const getAzimuth = (startPoint: Array<number>, endPoint: Array<number>) => {
   let azimuth
   let angle = Math.asin(Math.abs(endPoint[1] - startPoint[1]) / (MathDistance(startPoint, endPoint)))
   if (endPoint[1] >= startPoint[1] && endPoint[0] >= startPoint[0]) {
@@ -114,9 +110,8 @@ export const getAzimuth = (startPoint, endPoint) => {
  * @param pntA
  * @param pntB
  * @param pntC
- * @returns {number}
  */
-export const getAngleOfThreePoints = (pntA, pntB, pntC) => {
+export const getAngleOfThreePoints = (pntA: Array<number>, pntB: Array<number>, pntC: Array<number>) => {
   let angle = getAzimuth(pntB, pntA) - getAzimuth(pntB, pntC)
   return ((angle < 0) ? (angle + Math.PI * 2) : angle)
 }
@@ -126,9 +121,8 @@ export const getAngleOfThreePoints = (pntA, pntB, pntC) => {
  * @param pnt1
  * @param pnt2
  * @param pnt3
- * @returns {boolean}
  */
-export const isClockWise = (pnt1, pnt2, pnt3) => {
+export const isClockWise = (pnt1: Array<number>, pnt2: Array<number>, pnt3: Array<number>) => {
   return ((pnt3[1] - pnt1[1]) * (pnt2[0] - pnt1[0]) > (pnt2[1] - pnt1[1]) * (pnt3[0] - pnt1[0]))
 }
 
@@ -137,9 +131,8 @@ export const isClockWise = (pnt1, pnt2, pnt3) => {
  * @param t
  * @param startPnt
  * @param endPnt
- * @returns {[*,*]}
  */
-export const getPointOnLine = (t, startPnt, endPnt) => {
+export const getPointOnLine = (t, startPnt: Array<number>, endPnt: Array<number>) => {
   let x = startPnt[0] + (t * (endPnt[0] - startPnt[0]))
   let y = startPnt[1] + (t * (endPnt[1] - startPnt[1]))
   return [x, y]
@@ -152,9 +145,8 @@ export const getPointOnLine = (t, startPnt, endPnt) => {
  * @param cPnt1
  * @param cPnt2
  * @param endPnt
- * @returns {[*,*]}
  */
-export const getCubicValue = (t, startPnt, cPnt1, cPnt2, endPnt) => {
+export const getCubicValue = (t, startPnt: Array<number>, cPnt1: Array<number>, cPnt2: Array<number>, endPnt: Array<number>) => {
   t = Math.max(Math.min(t, 1), 0)
   let [tp, t2] = [(1 - t), (t * t)]
   let t3 = t2 * t
@@ -172,9 +164,8 @@ export const getCubicValue = (t, startPnt, cPnt1, cPnt2, endPnt) => {
  * @param angle
  * @param distance
  * @param clockWise
- * @returns {[*,*]}
  */
-export const getThirdPoint = (startPnt, endPnt, angle, distance, clockWise) => {
+export const getThirdPoint = (startPnt: Array<number>, endPnt: Array<number>, angle: number, distance: number, clockWise) => {
   let azimuth = getAzimuth(startPnt, endPnt)
   let alpha = clockWise ? (azimuth + angle) : (azimuth - angle)
   let dx = distance * Math.cos(alpha)
@@ -188,8 +179,7 @@ export const getThirdPoint = (startPnt, endPnt, angle, distance, clockWise) => {
  * @param parentCtor
  */
 export const inherits = (childCtor, parentCtor) => {
-  /** @constructor */
-  function TempCtor () {
+  function TempCtor() {
   }
 
   TempCtor.prototype = parentCtor.prototype
@@ -209,9 +199,8 @@ export const inherits = (childCtor, parentCtor) => {
  * @param radius
  * @param startAngle
  * @param endAngle
- * @returns {null}
  */
-export const getArcPoints = (center, radius, startAngle, endAngle) => {
+export const getArcPoints = (center: Array<number>, radius: number, startAngle: number, endAngle: number) => {
   let [x, y, pnts, angleDiff] = [null, null, [], (endAngle - startAngle)]
   angleDiff = ((angleDiff < 0) ? (angleDiff + (Math.PI * 2)) : angleDiff)
   for (let i = 0; i <= 100; i++) {
@@ -229,9 +218,8 @@ export const getArcPoints = (center, radius, startAngle, endAngle) => {
  * @param pnt1
  * @param pnt2
  * @param pnt3
- * @returns {[*,*]}
  */
-export const getBisectorNormals = (t, pnt1, pnt2, pnt3) => {
+export const getBisectorNormals = (t, pnt1: Array<number>, pnt2: Array<number>, pnt3: Array<number>) => {
   let normal = getNormal(pnt1, pnt2, pnt3)
   let [bisectorNormalRight, bisectorNormalLeft, dt, x, y] = [null, null, null, null, null]
   let dist = Math.sqrt(normal[0] * normal[0] + normal[1] * normal[1])
@@ -275,9 +263,8 @@ export const getBisectorNormals = (t, pnt1, pnt2, pnt3) => {
  * @param pnt1
  * @param pnt2
  * @param pnt3
- * @returns {[*,*]}
  */
-export const getNormal = (pnt1, pnt2, pnt3) => {
+export const getNormal = (pnt1: Array<number>, pnt2: Array<number>, pnt3: Array<number>) => {
   let dX1 = pnt1[0] - pnt2[0]
   let dY1 = pnt1[1] - pnt2[1]
   let d1 = Math.sqrt(dX1 * dX1 + dY1 * dY1)
@@ -296,9 +283,8 @@ export const getNormal = (pnt1, pnt2, pnt3) => {
 /**
  * 获取左边控制点
  * @param controlPoints
- * @returns {[*,*]}
  */
-export const getLeftMostControlPoint = (controlPoints, t) => {
+export const getLeftMostControlPoint = (controlPoints: number, t) => {
   let [pnt1, pnt2, pnt3, controlX, controlY] = [controlPoints[0], controlPoints[1], controlPoints[2], null, null]
   let pnts = getBisectorNormals(0, pnt1, pnt2, pnt3)
   let normalRight = pnts[0]
@@ -330,9 +316,8 @@ export const getLeftMostControlPoint = (controlPoints, t) => {
  * 获取右边控制点
  * @param controlPoints
  * @param t
- * @returns {[*,*]}
  */
-export const getRightMostControlPoint = (controlPoints, t) => {
+export const getRightMostControlPoint = (controlPoints: Array<Array<number>>, t) => {
   let count = controlPoints.length
   let pnt1 = controlPoints[count - 3]
   let pnt2 = controlPoints[count - 2]
@@ -368,7 +353,6 @@ export const getRightMostControlPoint = (controlPoints, t) => {
  * 插值曲线点
  * @param t
  * @param controlPoints
- * @returns {null}
  */
 export const getCurvePoints = (t, controlPoints) => {
   let leftControl = getLeftMostControlPoint(controlPoints, t)
@@ -398,9 +382,8 @@ export const getCurvePoints = (t, controlPoints) => {
 /**
  * 贝塞尔曲线
  * @param points
- * @returns {*}
  */
-export const getBezierPoints = function (points) {
+export const getBezierPoints = function (points: Array<Array<number>>) {
   if (points.length <= 2) {
     return points
   } else {
@@ -425,7 +408,6 @@ export const getBezierPoints = function (points) {
 /**
  * 获取阶乘数据
  * @param n
- * @returns {number}
  */
 export const getFactorial = (n) => {
   let result = 1
@@ -458,7 +440,6 @@ export const getFactorial = (n) => {
  * 获取二项分布
  * @param n
  * @param index
- * @returns {number}
  */
 export const getBinomialFactor = (n, index) => {
   return (getFactorial(n) / (getFactorial(index) * getFactorial(n - index)))
@@ -467,7 +448,6 @@ export const getBinomialFactor = (n, index) => {
 /**
  * 插值线性点
  * @param points
- * @returns {*}
  */
 export const getQBSplinePoints = points => {
   if (points.length <= 2) {
@@ -496,7 +476,6 @@ export const getQBSplinePoints = points => {
  * 得到二次线性因子
  * @param k
  * @param t
- * @returns {number}
  */
 export const getQuadricBSplineFactor = (k, t) => {
   let res = 0
@@ -512,10 +491,9 @@ export const getQuadricBSplineFactor = (k, t) => {
 
 /**
  * 获取id
- * @returns {*|string|!Array.<T>}
  */
 export const getuuid = () => {
-  let [ s, hexDigits ] = [ [], '0123456789abcdef' ]
+  let [s, hexDigits] = [[], '0123456789abcdef']
   for (let i = 0; i < 36; i++) {
     s[i] = hexDigits.substr(Math.floor(Math.random() * 0x10), 1)
   }
@@ -528,7 +506,6 @@ export const getuuid = () => {
 /**
  * 添加标识
  * @param obj
- * @returns {*}
  */
 export const stamp = function (obj) {
   let key = '_event_id_'
@@ -539,7 +516,6 @@ export const stamp = function (obj) {
 /**
  * 去除字符串前后空格
  * @param str
- * @returns {*}
  */
 export const trim = (str) => {
   return str.trim ? str.trim() : str.replace(/^\s+|\s+$/g, '')
@@ -548,7 +524,6 @@ export const trim = (str) => {
 /**
  * 将类名截取成数组
  * @param str
- * @returns {Array|*}
  */
 export const splitWords = (str) => {
   return trim(str).split(/\s+/)
@@ -557,7 +532,6 @@ export const splitWords = (str) => {
 /**
  * 判断是否为对象
  * @param value
- * @returns {boolean}
  */
 export const isObject = value => {
   const type = typeof value
@@ -568,7 +542,6 @@ export const isObject = value => {
  * merge
  * @param a
  * @param b
- * @returns {*}
  */
 export const merge = (a, b) => {
   for (const key in b) {
@@ -581,7 +554,7 @@ export const merge = (a, b) => {
   return a
 }
 
-export function preventDefault (e) {
+export function preventDefault(e) {
   e = e || window.event
   if (e.preventDefault) {
     e.preventDefault()
@@ -590,7 +563,7 @@ export function preventDefault (e) {
   }
 }
 
-export function bindAll (fns, context) {
+export function bindAll(fns, context) {
   fns.forEach((fn) => {
     if (!context[fn]) { return }
     context[fn] = context[fn].bind(context)

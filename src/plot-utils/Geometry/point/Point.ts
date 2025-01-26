@@ -2,11 +2,12 @@
  * Created by FDD on 2017/5/15.
  * @desc 点要素
  */
-import { Map } from 'ol'
-import { Point as $Point } from 'ol/geom'
-import { POINT } from '../../Utils/PlotTypes'
+import { Map } from 'ol';
+import { Point as $Point } from 'ol/geom';
+import { POINT } from '../../Utils/PlotTypes';
+import { Coordinate } from 'ol/coordinate';
 class Point extends $Point {
-  constructor(coordinates, point, params) {
+  constructor(coordinates: Array<Coordinate>, point: Array<Coordinate>, params) {
     super([])
     this.type = POINT
     this.options = params || {}
@@ -25,7 +26,6 @@ class Point extends $Point {
   fixPointCount: number;
   /**
    * 获取标绘类型
-   * @returns {*}
    */
   getPlotType() {
     return this.type
@@ -40,7 +40,7 @@ class Point extends $Point {
    * 设置地图对象
    * @param map
    */
-  setMap(map) {
+  setMap(map: Map) {
     if (map && map instanceof Map) {
       this.map = map
     } else {
@@ -50,7 +50,6 @@ class Point extends $Point {
 
   /**
    * 获取当前地图对象
-   * @returns {{}|*}
    */
   getMap() {
     return this.map
@@ -58,7 +57,6 @@ class Point extends $Point {
 
   /**
    * 判断是否是Plot
-   * @returns {boolean}
    */
   isPlot() {
     return true
@@ -77,7 +75,6 @@ class Point extends $Point {
 
   /**
    * 获取坐标点
-   * @returns {Array.<T>}
    */
   getPoints() {
     return this.points.slice(0)
@@ -85,7 +82,6 @@ class Point extends $Point {
 
   /**
    * 获取点数量
-   * @returns {Number}
    */
   getPointCount() {
     return this.points.length
