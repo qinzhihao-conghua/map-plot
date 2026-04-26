@@ -8,6 +8,8 @@ import OlPlot from 'src/plot-utils';
 import Select from 'ol/interaction/Select';
 import Modify from 'ol/interaction/Modify';
 import { defaults } from 'ol/interaction';
+import { SelectEvent } from 'ol/interaction/Select';
+import { ModifyEvent } from 'ol/interaction/Modify';
 
 @Component({
   selector: 'app-root',
@@ -16,15 +18,16 @@ import { defaults } from 'ol/interaction';
 })
 export class AppComponent {
   title = 'map-plot';
-  map: Map;
-  mapPlot: OlPlot;
-  selectEdit: Select;
-  modifyEdit: Modify;
+  map!: Map;
+  mapPlot!: OlPlot;
+  selectEdit!: Select;
+  modifyEdit!: Modify;
 
-  ngOnInit() {
-
+  ngOnInit(): void {
+    // 初始化逻辑
   }
-  ngAfterViewInit() {
+
+  ngAfterViewInit(): void {
     this.map = new Map({
       target: 'plotMap',
       layers: [
@@ -47,42 +50,46 @@ export class AppComponent {
         doubleClickZoom: false
       })
     });
-    this.mapPlot = new OlPlot(this.map, {})
-  }
-  drawGemo(type) {
-    this.mapPlot.plotDraw.active(type)
-  }
-  getFeatures() {
-    const features = this.mapPlot.plotUtils.getFeatures()
-    console.log(features)
-    this.mapPlot.plotUtils.removeAllFeatures()
-    this.mapPlot.plotEdit.deactivate()
-    this.mapPlot.plotUtils.addFeatures(features)
+    this.mapPlot = new OlPlot(this.map, {});
   }
 
-  editLayer() {
-    let features: Feature;
+  drawGemo(type: string): void {
+    this.mapPlot.plotDraw.active(type);
+  }
+
+  getFeatures(): void {
+    const features = this.mapPlot.plotUtils.getFeatures();
+    console.log(features);
+    this.mapPlot.plotUtils.removeAllFeatures();
+    this.mapPlot.plotEdit.deactivate();
+    this.mapPlot.plotUtils.addFeatures(features);
+  }
+
+  editLayer(): void {
     this.selectEdit = new Select({
       multi: false //取消多选
-    })
+    });
     this.map.addInteraction(this.selectEdit);
     this.modifyEdit = new Modify({
-      features: this.selectEdit.getFeatures()//将选中的要素添加修改功能
-    })
-    this.map.addInteraction(this.modifyEdit)
-    this.selectEdit.on("select", function (evt) {
-      console.log('选择', evt)
-    })
+      features: this.selectEdit.getFeatures() //将选中的要素添加修改功能
+    });
+    this.map.addInteraction(this.modifyEdit);
+
+    this.selectEdit.on('select', (evt: SelectEvent) => {
+      console.log('选择', evt);
+    });
+
     //监听要素修改时
-    this.modifyEdit.on("modifyend", function (evt) {
-      let new_feature = evt.features.item(0)
-      console.log('编辑结束', new_feature)
-    })
+    this.modifyEdit.on('modifyend', (evt: ModifyEvent) => {
+      const new_feature = evt.features.item(0);
+      console.log('编辑结束', new_feature);
+    });
 
     // this.mapPlot.plotEdit.activate(features);
   }
-  cancelEdit() {
-    this.mapPlot.plotEdit.deactivate()
+
+  cancelEdit(): void {
+    this.mapPlot.plotEdit.deactivate();
     this.map.removeInteraction(this.selectEdit);
     this.map.removeInteraction(this.modifyEdit);
   }
