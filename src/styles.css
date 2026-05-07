@@ -1,1 +1,22 @@
 /* You can add global styles to this file, and also import other style files */
+
+/* 标绘控制点样式 */
+.plot-helper-control-point-div {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: #fff;
+  border: 2px solid #1890ff;
+  cursor: pointer;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.3);
+}
+
+.plot-helper-control-point-div:hover {
+  background-color: #1890ff;
+  transform: scale(1.2);
+}
+
+/* 隐藏容器 */
+#plot-helper-hidden-div {
+  display: none;
+}

@@ -442,6 +442,7 @@ class PlotUtils {
               if (geom && geom.getCoordinates) {
                 const type = geom.getType();
                 const coordinates = geom.getCoordinates();
+                const plotType = geom.getPlotType ? geom.getPlotType() : (feature.get('plotType') || type);
                 rFeatures.push({
                   'type': 'Feature',
                   'geometry': {
@@ -449,7 +450,7 @@ class PlotUtils {
                     'coordinates': coordinates
                   },
                   'properties': {
-                    'type': feature.getGeometry()!.getPlotType(),
+                    'type': plotType,
                     'style': this.getStyleCode(feature),
                     'points': feature.getGeometry()!.getPoints()
                   }

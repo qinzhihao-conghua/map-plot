@@ -199,6 +199,8 @@ class PlotEdit {
       this.activePlot = plot;
       this.previousCursor_ = this.map.getTargetElement().style.cursor;
       this.map.on('pointermove', this.plotMouseOverOutHandler);
+      this.map.on('pointerdown' as any, this.plotMouseDownHandler);
+      this.map.on('pointerup' as any, this.plotMouseUpHandler);
       this.initHelperDom();
       this.initControlPoints();
     }
